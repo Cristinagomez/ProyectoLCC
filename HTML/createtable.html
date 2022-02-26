@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <title>Tablas, datos y consultas</title>
+</head>
+<body>
+  
+  <header class="container-fluid p-3 bg-success text-white text-center">
+    <h1>Líderes en Cata de Cervezas</h1>
+    <p>Proyecto de Bases de Datos</p> 
+  </header>
+
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <div class="container-fluid">
+      <img src="../IMG/cerveza1.jpg" alt="Logo" style="width:40px;" class="rounded-pill">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mynavbar">
+        <ul class="navbar-nav me-auto">
+           <li class="nav-item">
+            <a class="nav-link" href="../index.html">Inicio</a>
+          </li>
+           <li class="nav-item">
+            <a class="nav-link" href="introduccion.html">Introducción</a>
+          </li>
+           <li class="nav-item">
+            <a class="nav-link" href="especificaciones.html">Especificaciones</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="diagrama.html">Diagrama Entidad-Relación</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="relacional.html">Modelo Relacional</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="createtable.html">Tablas, datos y consultas</a>
+          </li>
+        </ul>
+         <form class="d-flex">
+          <a href="integrantes.html" class="btn btn-success">Ver integrantes</a>
+        </form>
+        <div class="dropdown">
+          <button type="button" class="btn btn-success m-1 dropdown-toggle" data-bs-toggle="dropdown">
+            Recursos usados
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="https://app.diagrams.net/" target="_blank">Diagrams.net</a></li>
+            <li><a class="dropdown-item" href="https://www.sublimetext.com/" target="_blank">Sublime Text</a></li>
+            <li><a class="dropdown-item" href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a></li>
+            <li><a class="dropdown-item" href="https://www.docker.com/products/docker-desktop" target="_blank">Docker</a></li>
+            <li><a class="dropdown-item" href="https://dbeaver.io/" target="_blank">Dbeaver</a></li>
+            <li><a class="dropdown-item" href="https://www.mockaroo.com/" target="_blank">Mockaroo</a></li>
+            <li><a class="dropdown-item" href="https://generadordni.es/#home" target="_blank">Generador de DNI</a></li>
+            <li><a class="dropdown-item" href="https://dbdiagram.io/home" target="_blank">Dbdiagram.io</a></li>
+            <li><a class="dropdown-item" href="https://sqldbm.com/Home/" target="_blank">SqlDBM</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+   <div class="container p-3 mt-4">
+    <h2 class="text-success">3.2. Creación de tablas</h2>
+      <a href="#demo" class="btn btn-success" data-bs-toggle="collapse">Tablas</a>
+    
+      <a href="../TXT/createtable.txt" class="btn btn-success" target="_blank">Formato de texto</a>
+        
+      <div id="demo" class="collapse">
+         <br>
+        <h6>Creación de tablas. Están en formato texto más arriba.</h6>
+        
+        <div class="row">
+          <div class="col"><img src="../IMG/create/1.JPG" alt="create"></div>
+          <div class="col"><img src="../IMG/create/2.jpg" alt="create"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/create/3.jpg" alt="create"></div>
+        <div class="col"><img src="../IMG/create/4.jpg" alt="create"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/create/5.jpg" alt="create"></div>
+        <div class="col"><img src="../IMG/create/6.jpg" alt="create"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/create/7.jpg" alt="create"></div>
+        <div class="col"><img src="../IMG/create/8.jpg" alt="create"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/create/9.jpg" alt="create"></div>
+        <div class="col"><img src="../IMG/create/10.jpg" alt="create"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/create/11.jpg" alt="create"></div>
+        <div class="col"><img src="../IMG/create/12.jpg" alt="create"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/create/13.jpg" alt="create"></div>
+        <div class="col"><img src="../IMG/create/14.jpg" alt="create"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/create/15.jpg" alt="create"></div>   
+        </div> 
+      </div>
+  </div>
+  <div class="container p-3 mt-4">
+    <h2 class="text-success">3.3. Carga de datos </h2>
+       <a href="#demo1" class="btn btn-success" data-bs-toggle="collapse">Inserts</a>
+       <a href="../TXT/insert.txt" class="btn btn-success" target="_blank">Formato de texto</a>
+      <div id="demo1" class="collapse">
+         <br>
+        <h6>Carga de datos. Están en formato texto más arriba.</h6>
+        <div class="row">
+          <div class="col"><img src="../IMG/insert/1.JPG" alt="insert"></div>
+          <div class="col"><img src="../IMG/insert/2.jpg" alt="insert"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/insert/3.jpg" alt="insert"></div>
+        <div class="col"><img src="../IMG/insert/4.jpg" alt="insert"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/insert/5.jpg" alt="insert"></div>
+        <div class="col"><img src="../IMG/insert/6.jpg" alt="insert"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/insert/7.jpg" alt="insert"></div>
+        <div class="col"><img src="../IMG/insert/8.jpg" alt="insert"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/insert/9.jpg" alt="insert"></div>
+        <div class="col"><img src="../IMG/insert/10.1.jpg" alt="insert"></div>
+        <div class="col"><img src="../IMG/insert/10.2.jpg" alt="insert"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/insert/11.jpg" alt="insert"></div>
+        <div class="col"><img src="../IMG/insert/12.jpg" alt="insert"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/insert/13.jpg" alt="insert"></div>
+        <div class="col"><img src="../IMG/insert/14.jpg" alt="insert"></div>
+        </div>
+        <div class="row">
+        <div class="col"><img src="../IMG/insert/15.jpg" alt="insert"></div>   
+        </div> 
+      </div>
+  </div>
+  <div class="container p-3 mt-4">
+    <h2 class="text-success">4. Consultas</h2>
+      <a href="#demo2" class="btn btn-success" data-bs-toggle="collapse">Selects</a>
+    
+      <a href="../TXT/select.txt" class="btn btn-success" target="_blank">Formato de texto</a>
+        
+      <div id="demo2" class="collapse">
+        <br>
+        <h6>Algunos ejemplos de resultado de consultas. Todas las consulta están en formato texto más arriba.</h6>
+        
+        <div class="row">
+          <p>select  nombre as "Nombre Cerveza" from cerveza;</p>
+          <p>select  nombre as "Nombre Cerveza", alcohol as "Graduación" from cerveza order by alcohol desc limit 3;</p>
+          <p>select  nombre as "Nombre Cerveza", alcohol as "Graduación" from cerveza order by alcohol limit 3;</p>
+          <p>select  nombre, estilo from cerveza where estilo ilike 'ale';</p>
+          <div class="col mx-auto"><img src="../IMG/select/1.JPG" alt="select"></div>
+          <p>select  nombre as "Empleados Organizadores" from empleado where tipoEmpleado = 2;</p>
+          <p>select  nombre as "Empleados sin cargo" from empleado where tipoEmpleado not in (1,2);</p>
+          <div class="col mx-auto"><img src="../IMG/select/2.jpg" alt="select"></div>
+        </div>
+        <div class="row">
+          <p>select  nombre as "Empleados Sommeliers" from empleado where tipoEmpleado = 1;</p>
+          <p>select  nombre, cif, telefono from distribuidor order by nombre;</p>
+          <p>select  estilo, count(id) as "Cervezas por Estilo" from cerveza group by estilo;</p>
+        <div class="col mx-auto"><img src="../IMG/select/3.jpg" alt="select"></div>
+        <p>select  e.nombre, count(v.idCerveza) as "Total de Cervezas valoradas" from empleado e 
+        join valoracion v on (v.dniEmpleado=e.dni)
+        group by e.nombre
+        order by "Total de Cervezas valoradas";</p>
+        <br>
+        <p>select  c.nombre as "Nombre cerveza", v.puntuacion as Valoración
+        from valoracion v 
+        join cerveza c on (v.idCerveza = c.id)
+        order by v.puntuacion desc;</p>
+        <div class="col mx-auto"><img src="../IMG/select/4.jpg" alt="select"></div>
+        </div>
+        
+      </div>
+  </div>
+
+   <footer class="container-fluid p-2 mt-4 bg-success text-white text-center">
+    <a href="avisolegal.html" class="text-light" target="_blank">Aviso legal</a>
+  </footer>
+  
+</body>
+</html>

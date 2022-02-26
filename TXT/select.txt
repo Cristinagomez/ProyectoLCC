@@ -1,0 +1,496 @@
+--=============================================
+--SEELCT GENERAL
+--=============================================
+--**************************
+--01
+--**************************
+select  nombre as "Nombre Cerveza" 
+from    cerveza;
+
+--**************************
+--02
+--**************************
+select  nombre as "Nombre Cerveza",
+        alcohol as "Graduación"
+from    cerveza
+where   alcohol = (
+        select min(alcohol)
+        from cerveza
+);
+
+--**************************
+--03
+--**************************
+select  nombre as "Nombre Cerveza",
+        alcohol as "Graduación"
+from    cerveza 
+order by alcohol desc
+limit 3;
+
+--**************************
+--04
+--**************************
+select  nombre as "Nombre Cerveza",
+        alcohol as "Graduación"
+from    cerveza 
+order by alcohol 
+limit 3;
+
+--**************************
+--05
+--**************************
+select  nombre as "Nombre Cerveza",
+        alcohol as "Graduación"
+from    cerveza
+where   alcohol = (
+        select max(alcohol)
+        from cerveza
+);
+
+--**************************
+--06
+--**************************
+select  nombre, 
+        estilo
+from    cerveza
+where   estilo ilike 'ale';
+
+--**************************
+--07
+--**************************
+select  estilo, 
+        count(id) as "Cervezas por Estilo"
+from    cerveza
+group by estilo;
+
+--**************************
+--08
+--**************************
+select  nombre, 
+        cif, 
+        telefono 
+from    distribuidor
+order by nombre;
+
+--**************************
+--09
+--**************************
+select  nombre as "Empleados Sommeliers"
+from    empleado
+where   tipoEmpleado = 1;
+
+--**************************
+--10
+--**************************
+select  nombre as "Empleados Organizadores"
+from    empleado
+where   tipoEmpleado = 2;
+
+--**************************
+--11
+--**************************
+select  nombre as "Empleados sin cargo"
+from    empleado
+where   tipoEmpleado not in (1,2);
+
+--**************************
+--12
+--**************************
+select  c.nombre as "Nombre cerveza", 
+        v.puntuacion as Valoración
+from    valoracion v 
+        join cerveza c on (v.idCerveza = c.id)
+order by v.puntuacion desc;
+
+--**************************
+--13
+--**************************
+select  e.nombre,
+        count(v.idCerveza) as "Total de Cervezas valoradas"
+from    empleado e 
+        join valoracion v on (v.dniEmpleado=e.dni)
+group by e.nombre
+order by "Total de Cervezas valoradas";
+
+--**************************
+--14
+--**************************
+--Lista de cervezas con el numero de veces que se ha probado
+select  c.nombre as "Nombre Cerveza",
+        count(v.puntuacion)
+from    cerveza c 
+        join valoracion v on (c.id=v.idCerveza)
+group by "Nombre Cerveza"
+order by "Nombre Cerveza";
+
+--**************************
+--15
+--**************************  
+--Las tres cervezas con mayor puntuacion
+select  c.nombre "Cerveza", 
+        v.puntuacion 
+from    valoracion v 
+        join cerveza c on (v.idCerveza = c.id) 
+order by v.puntuacion desc limit 3;
+
+--**************************
+--16
+--**************************
+--Informe por año de cervezas, numero de cervezas compradas y su precio medio de compra 
+select  extract(year from c.fechaCompra) "Año", 
+        cerv.nombre "Cerveza", 
+        sum(c.cantidad) "Num Cervezas", 
+        round(avg(c.precio),2) "Precio Medio" 
+from    cerveza cerv
+        left join compra c on (cerv.id = c.idCerveza) 
+group by "Año", "Cerveza"
+order by "Año", "Cerveza", "Num Cervezas", "Precio Medio";
+
+--**************************
+--17
+--**************************
+--Precio de cada cerveza por distribuidor
+select  d.nombre "Distribuidor", 
+        cerv.nombre "Cerveza", 
+        round(avg(c.precio),2) "Precio medio" 
+from    distribuidor d
+        join compra c on (d.cif = c.cifDistribuidor)
+        join cerveza cerv on (c.idCerveza = cerv.id)
+group by d.cif, cerv.nombre
+order by d.cif;
+
+--**************************
+--18
+--**************************
+--Gasto total por año en cada distribuidor
+select  extract(year from c.fechaCompra) "Año",
+        d.nombre "Distribuidor",
+        SUM((c.cantidad*c.precio)) "Gasto" 
+from    compra c 
+        right join distribuidor d on(c.cifDistribuidor = d.cif)
+group by extract(year from c.fechaCompra), d.nombre 
+order by "Año", d.nombre;
+
+--**************************
+--19
+--**************************
+--Informe de IBU de las cervezas
+select  nombre "Cerveza", 
+        ibu 
+from    cerveza 
+order by ibu desc;
+
+--**************************
+--20
+--**************************
+--Cervezas por paises
+select  pais "Pais", 
+        nombre "Cerveza" 
+from    cerveza 
+order by pais;
+
+--**************************
+--21
+--**************************
+--Listado de Cerveceras
+select  distinct cervecera "Cerveceras" 
+from    cerveza;
+
+--**************************
+--22
+--**************************
+--Utima prueba de cada cerveza
+select  cerv.nombre "Cerveza", 
+        max(v.fecha) "Fecha ultima valoración" 
+from    cerveza cerv
+        join valoracion v on(cerv.id = v.idCerveza)
+group by "Cerveza"
+order by "Fecha ultima valoración";
+
+--**************************
+--23
+--**************************
+--Max alcohol y menos alcohol de cada estilo
+select  estilo, 
+        max(alcohol) "Mas grados", 
+        min(alcohol) "Menos grados"
+from    cerveza 
+group by estilo 
+order by estilo, "Mas grados" desc; --Se podria meter los nombres??
+
+--**************************
+--24
+--**************************
+select  c.nombre as "Cliente",
+        a.idCata as "Cata",
+        e.fechainicio
+from    cliente c
+        join asiste a on c.dni = a.dniCliente
+        join cata ca on a.idCata = ca.idEvento
+        join evento e on ca.idEvento = e.id
+order by "Cata";
+
+--**************************
+--25
+--**************************
+select * 
+from    cliente
+where   nombre ilike '%i%';
+
+--**************************
+--26
+--**************************
+select  c.nombre as "Cliente", 
+        a.idCata as "Cata", 
+        ca.aforo
+from    cliente c 
+        join asiste a on c.dni = a.dniCliente
+        join cata ca on a.idCata = ca.idEvento
+where   ca.aforo <5
+order by "Cata";
+
+--**************************
+--27
+--**************************
+select  c.idEvento as "Cata",
+        date_part('year', e.fechainicio) as "Año"
+from    cata c
+        join evento e on c.idEvento = e.id
+group by c.idEvento, "Año"
+having  date_part('year', e.fechainicio) <= 2020 
+order by c.idEvento;
+
+--**************************
+--28
+--**************************
+select  idEvento as "Concurso",
+        nombreJuez as "Juez",
+        ganador as "Premiado"
+from    concurso
+where   nombreJuez ilike '%r';
+
+--**************************
+--29
+--**************************
+select * 
+from    cervecera 
+where   idConcurso = 27;
+
+--**************************
+--30
+--**************************
+select  c.ganador, 
+        ce.nombre, 
+        ce.cervezaParticipante
+from    concurso c 
+        join cervecera ce on (c.idEvento = ce.idConcurso)
+where   c.ganador = ce.cif;
+
+--**************************
+--31
+--**************************
+select  distinct nombre 
+from    cervecera
+order by nombre;
+
+--**************************
+--32
+--**************************
+select  distinct nombre,
+        direccion,
+        pais 
+from    cervecera
+where   pais ilike 'España'
+order by nombre;
+
+--**************************
+--33
+--**************************
+select  c.idEvento as "Concurso",
+        date_part('month', e.fechafin) as "Mes de finalización",
+        date_part('year', e.fechafin) as "Año"
+from    concurso c
+        join evento e on c.idEvento = e.id
+group by c.idEvento, "Año","Mes de finalización"
+having  date_part('month', e.fechafin) <= 07 
+order by "Año","Concurso";
+
+--**************************
+--34
+--**************************
+select  e.fechaInicio as "Fecha de inicio",
+        e.fechaFin as "Fecha de finalización",
+        e.id as "ID Evento",
+        c.ganador as "Ganador"
+from    evento e 
+        right join concurso c on e.id = c.idEvento
+order by "Fecha de inicio";
+
+--**************************
+--35
+--**************************
+select  nombre as "Cliente",
+        email
+from    cliente
+order by "Cliente";
+
+--**************************
+--36
+--**************************
+select  idEvento as "Cata" 
+from    cata 
+where   aforo <= 3 
+or      numeroCervezas <5;
+
+--**************************
+--37
+--**************************
+select  round(avg(aforo)) as "Aforo medio",
+        round(avg(numeroCervezas)) as "Media de cervezas"
+from cata;
+
+--**************************
+--38 
+--**************************
+-- empleado Organizador con el sueldo mas bajo
+select  nombre,
+        sueldo
+from    empleado
+where   sueldo = (
+        select  min(sueldo)
+        from    empleado
+        where   tipoEmpleado=2
+        )
+order by nombre;
+
+--**************************
+--39
+--**************************
+--empleado Organizador con el sueldo mas alto
+select  nombre,
+        sueldo
+from    empleado
+where   sueldo = (
+        select  max(sueldo)
+        from    empleado
+        where   tipoEmpleado=2
+        )
+order by nombre;
+
+--**************************
+--40
+--**************************
+-- Alumnos nacido despues del 2000
+select  nombre,
+        anoNacimiento as "Año de nacimiento"
+from    alumno
+where   anoNacimiento > 2000
+order by nombre;
+
+--**************************
+--41
+--**************************
+--Total de alumnos por año
+select  anoNacimiento as "Año de nacimiento",
+        count(dni) as "Total de alumnos por año"
+from    alumno
+group by "Año de nacimiento"
+order by "Año de nacimiento";
+
+--**************************
+--42
+--**************************
+-- Alumnos mayores de edad
+select  nombre,
+        anoNacimiento as "Año de nacimiento"
+from    alumno
+where   extract(year from now())-anoNacimiento>=18
+order by "Año de nacimiento";
+
+--**************************
+--43
+--**************************
+--Total recuadado por cursos en cada año
+select  extract(year from fechainicio) as Año,
+        sum(importe) as "Total recuadado por cursos"        
+from    evento e
+        right join curso c on (e.id=c.idEvento)
+group by Año
+order by Año;
+
+--**************************
+--44
+--**************************
+--total de jefes por tipoEmpleado
+select  tipoEmpleado as "Tipo de Empleados",
+        count(jefe) as "Total de jefes"
+from    empleado
+where   jefe = true
+group by tipoEmpleado
+order by tipoEmpleado;
+
+--**************************
+--45
+--**************************
+-- nombre y telefono de los alumnos de curso avanzado
+select  a.nombre as "Nombre alumno",
+        a.telefono as Teléfono
+from    alumno a
+        join cursa cu on (a.dni=cu.dniAlum)
+        join curso cso on (cu.idCurso=cso.idEvento)
+where   cso.nivel ilike 'Avanzado'
+order by "Nombre alumno";
+
+--**************************
+--46
+--**************************
+-- total de alumnos por nivel
+select  c.nivel as Nivel,
+        count(a.dni) as "Total de alumnos"
+from    alumno a 
+        join cursa cu on(cu.dniAlum=a.dni)
+        join curso c on (c.idEvento=cu.idCurso)
+group by Nivel
+order by Nivel;
+
+--**************************
+--47
+--**************************
+--
+select  estilo,
+        round(avg(ibu),2) as "Amargor"
+from    cerveza
+group by estilo
+order by estilo;
+
+--**************************
+--48
+--**************************
+--
+select  c.pais as "Pais",
+        count(con.ganador) as "Veces ganador"
+from    cervecera c 
+        join concurso con on (con.idEvento=c.idConcurso)
+group by c.pais
+order by "Veces ganador";
+
+--**************************
+--49
+--**************************
+--
+select  tipoEmpleado as "Tipo de empleado",
+        round(avg(sueldo),2) as "Sueldo Medio"
+from    empleado
+group by tipoEmpleado
+order by tipoEmpleado;
+
+
+--**************************
+--50
+--**************************
+--
+select  c.nombre as "Cerveza"
+from    cerveza c, 
+        cervecera ce
+where   c.nombre = ce.cervezaParticipante
+order by c.nombre;

@@ -1,0 +1,135 @@
+BEGIN TRANSACTION;
+
+CREATE TABLE EMPLEADO(
+    dni VARCHAR(9) PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    telefono VARCHAR(10),
+    sueldo NUMERIC(7,2),
+    jefe BOOLEAN,
+    anosExperiencia INT,
+    tipoEmpleado NUMERIC(2) NOT NULL
+);
+
+CREATE TABLE CERVEZA(
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    cervecera VARCHAR(50) NOT NULL,
+    estilo VARCHAR(20) NOT NULL,
+    alcohol NUMERIC(4,2) NOT NULL,
+    ibu INT NOT NULL ,
+    pais VARCHAR(20) NOT NULL,
+    anoFabricacion INT NOT NULL,
+    CONSTRAINT cerveza_ibu_ck CHECK (ibu BETWEEN 0 AND 100)
+);
+
+CREATE TABLE ALUMNO(
+    dni VARCHAR(10) PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    anoNacimiento INT,
+    telefono VARCHAR(9) NOT NULL
+);
+
+CREATE TABLE EVENTO(
+    id INT PRIMARY KEY,
+    fechaInicio DATE,
+    fechaFin DATE,
+    importe NUMERIC (6,2)
+);
+
+CREATE TABLE CLIENTE(
+    dni VARCHAR(10) PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    telefono VARCHAR(9) NOT NULL,
+    email VARCHAR(50)
+);
+
+CREATE TABLE DISTRIBUIDOR(
+    cif VARCHAR(10) PRIMARY KEY,
+    nombre VARCHAR(50),
+    direccion VARCHAR(50),
+    telefono VARCHAR(9)
+);
+
+CREATE TABLE CURSO(
+    idEvento INT PRIMARY KEY,
+    nivel VARCHAR(20),
+    plazas INT, 
+    CONSTRAINT curso_idEvento_fk FOREIGN KEY (idEvento) REFERENCES evento(id)
+);
+
+CREATE TABLE CURSA(
+    dniEmp VARCHAR(9), 
+    dniAlum VARCHAR(10), 
+    idCurso INT,
+    CONSTRAINT cursa_pk PRIMARY KEY (dniEmp, dniAlum, idCurso),
+    CONSTRAINT cursa_dniEmp_fk FOREIGN KEY (dniEmp) REFERENCES empleado(dni),
+    CONSTRAINT cursa_dniAlum_fk FOREIGN KEY (dniAlum) REFERENCES alumno(dni),
+    CONSTRAINT cursa_idCurso_fk FOREIGN KEY (idCurso) REFERENCES curso(idEvento)
+);
+
+
+CREATE TABLE ORGANIZA(
+    dniEmp VARCHAR(9), 
+    idEvento INT, 
+    CONSTRAINT organiza_pk PRIMARY KEY (dniEmp, idEvento),
+    CONSTRAINT organiza_dniEmp_fk FOREIGN KEY (dniEmp) REFERENCES empleado(dni) ON DELETE CASCADE,
+    CONSTRAINT organiza_idEvento_fk FOREIGN KEY (idEvento) REFERENCES evento(id)
+);
+
+CREATE TABLE CATA(
+    idEvento INT PRIMARY KEY,
+    aforo INT NOT NULL,
+    numeroCervezas INT,
+    CONSTRAINT cata_idEvento_fk FOREIGN KEY (idEvento) REFERENCES evento(id)
+);
+
+
+CREATE TABLE ASISTE(
+    dniCliente VARCHAR(10),
+    idCata INT,
+    CONSTRAINT asiste_pk PRIMARY KEY (dniCliente, idCata),
+    CONSTRAINT asiste_dniCliente_fk FOREIGN KEY (dniCliente) REFERENCES cliente(dni),
+    CONSTRAINT asiste_idCata_fk FOREIGN KEY (idCata) REFERENCES cata(idEvento)
+);
+
+CREATE TABLE CONCURSO(
+    idEvento INT PRIMARY KEY,
+    nombreJuez VARCHAR(20) NOT NULL,
+    ganador VARCHAR(50),
+    CONSTRAINT concurso_idEvento_fk FOREIGN KEY (idEvento) REFERENCES evento(id)
+);
+
+CREATE TABLE CERVECERA(
+    cif VARCHAR(10),
+    idConcurso INT,
+    nombre VARCHAR(50) NOT NULL,
+    cervezaParticipante VARCHAR(50) NOT NULL,
+    direccion VARCHAR(50),
+    ciudad VARCHAR(30),
+    pais VARCHAR(30),
+    CONSTRAINT cervecera_pk PRIMARY KEY (cif, idConcurso, cervezaParticipante),
+    CONSTRAINT cervecera_idconcurso_fk FOREIGN KEY (idConcurso) REFERENCES concurso(idEvento)
+);
+
+CREATE TABLE COMPRA(
+    idCerveza INT, 
+    cifDistribuidor VARCHAR(10), 
+    fechaCompra DATE,
+    cantidad INT,
+    precio NUMERIC(8,2),
+    CONSTRAINT compra_pk PRIMARY KEY (idCerveza, cifDistribuidor,fechaCompra),
+    CONSTRAINT compra_idCerveza_fk FOREIGN KEY (idCerveza) REFERENCES cerveza(id),
+    CONSTRAINT compra_cifDistribuidor_fk FOREIGN KEY (cifDistribuidor) REFERENCES distribuidor(cif)
+);
+
+CREATE TABLE VALORACION(
+    idCerveza INT,
+    dniEmpleado VARCHAR(9),
+    puntuacion INT CONSTRAINT valoracion_puntuacion_ck CHECK (puntuacion BETWEEN 1 AND 10),
+    fecha DATE,
+    CONSTRAINT valoracion_pk PRIMARY KEY (idCerveza, dniEmpleado),
+    CONSTRAINT valoracion_idCerveza_fk FOREIGN KEY (idCerveza) REFERENCES cerveza(id) ON DELETE CASCADE,
+    CONSTRAINT valoracion_dniEmpleado_fk FOREIGN KEY (dniEmpleado) REFERENCES empleado(dni) ON DELETE CASCADE
+);
+
+COMMIT TRANSACTION;

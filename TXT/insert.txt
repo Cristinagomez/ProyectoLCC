@@ -1,0 +1,483 @@
+BEGIN TRANSACTION;
+insert into EMPLEADO (dni, nombre, telefono, sueldo, jefe, anosExperiencia, tipoEmpleado) 
+values 
+('33798955B', 'Guillermo Sealeaf', '647140956', 2429.65, false, 5, 1),
+('06408178P', 'Corena Hoggan', '601086578', 4583.93, false, 15, 1),
+('89992409F', 'Noah Barg', '621185687', 3677.89, false, 13, 3),
+('44246904G', 'Rubina Boater', '663013592', 4630.83, true, 11, 1),
+('81238772L', 'Issie Pimlett', '622493791', 1160.7, true, 2, 2),
+('28101197R', 'Queenie Lucia', '605966761', 2733.41, false, 6, 2),
+('99550653Q', 'Torrie Abba', '613339653', 2430.3, true, 7, 2),
+('36057909W', 'Susy Pinnere', '613283853', 4736.47, true, 12, 1),
+('63896827T', 'Case Alelsandrowicz', '645296736', 1306.09, false, 4, 3),
+('76167687Y', 'Adolphus Knotte', '653959830', 3716.55, true, 10, 1),
+('61881024P', 'Shellysheldon Wetton', '681796008', 3615.38, true, 11, 1),
+('11265865S', 'Emeline Iacovucci', '658966489', 1614.73, false, 4, 2),
+('98920704D', 'Chiquita Liepmann', '652241396', 1566.21, false, 13, 3),
+('17102234F', 'Reinwald Wilshaw', '693251074', 1800.98, false, 3, 3),
+('81347197G', 'Cori Rivenzon', '671787524', 1304.92, false, 1, 2),
+('62207687H', 'Odie Guerrero', '665999166', 4562.53, false, 16, 2),
+('18566274J', 'Phillipp Kineton', '614059463', 3198.73, false, 17, 1),
+('27959007K', 'Athene Elleray', '615393991', 4047.01, false, 18, 3),
+('26676972L', 'Wilek Loade', '651843169', 4347.17, true, 13, 2),
+('21646501Z', 'Adey Wiszniewski', '652114685', 2583.52, false, 6, 2),
+('01878277X', 'Darryl Woodfield', '628674104', 4290.85, true, 7, 2),
+('21035302C', 'Fair Christofle', '689875089', 3962.53, false, 15, 1),
+('03360000V', 'Marybelle Favela', '605459947', 2059.29, false, 8, 2),
+('68965671B', 'Gisele Perle', '673022495', 4882.7, false, 18, 1),
+('52289872N', 'Michaella Guyers', '621043755', 3145.33, false, 6, 2),
+('30717140M', 'Sandie Brakespear', '654573702', 1517.38, false, 2, 2),
+('26715301L', 'Lillian Kalkofen', '655806815', 2375.74, false, 8, 2),
+('68222344K', 'Lawry Westfalen', '654761067', 4375.59, true, 16, 2),
+('58815162H', 'Cherin Hendren', '638411852', 3989.34, false, 13, 1),
+('22172119T', 'Oliver Bridgewood', '667067744', 4398.19, false, 15, 1),
+('41884595F', 'Donnie Stolworthy', '605273872', 4937.57, false, 13, 3),
+('65929960D', 'Antonetta Ivanonko', '694445939', 1350.46, false, 2, 3),
+('45627400S', 'Grace Bradley', '604988213', 1240.92, false, 3, 3),
+('74713126P', 'Maura Dolder', '615974280', 1145.73, true, 4, 1),
+('53702343Y', 'Arron Yashin', '654706873', 3326.08, true, 9, 1),
+('59587646T', 'Wheeler Shaxby', '624216218', 2219.81, true, 12, 1),
+('30652681R', 'Aeriell Borley', '647841921', 4678.97, false, 20, 3),
+('52727187W', 'Sidonia Daspar', '667097412', 3980.86, false, 11, 1),
+('49663885M', 'Kip Cavee', '681115855', 2988.79, false, 10, 1),
+('73060008N', 'Burl Gear', '699937695', 1464.52, false, 5, 1),
+('26436559B', 'Munroe Kinnoch', '662088278', 3342.92, true, 11, 2),
+('35739949V', 'Tiffanie Van Der S6aaten', '3356665470', 3286.14, true, 12, 2),
+('67296169B', 'Myrilla Stiff', '671103990', 2191.12, false, 13, 2),
+('74261472N', 'Minerva Oen', '601523022', 2041.55, false, 14, 2),
+('26763728M', 'Lanie Davenhill', '665508073', 2627.12, true, 15, 1),
+('94052690S', 'Denna Yggo', '691603228', 3357.49, true, 16, 3),
+('71394555D', 'Oralle Drinkwater', '696476784', 4610.04, false, 7, 2),
+('82504110F', 'Melonie Massie', '668138651', 2949.32, true, 8, 2),
+('20114096G', 'York Curee', '674139481', 3962.6, false, 9, 1),
+('00377022H', 'Barbabas Potts', '635493283', 3537.73, false, 5, 1);
+
+
+insert into EVENTO (ID, fechaInicio, fechaFin, importe) 
+values 
+(1, '2020-02-23', '2020-02-23', 25.00), --cata
+(2, '2020-09-13', '2020-09-13', 25.00), --cata 
+(3, '2021-01-12', '2021-01-12', 25.00), --cata
+(4, '2021-01-11', '2021-01-11', 25.00), --cata
+(5, '2020-10-29', '2020-10-29', 25.00), --cata 
+(6, '2021-04-15', '2021-04-17', 80.00), --consurso
+(7, '2020-01-21', '2020-01-23', 80.00), --concurso
+(8, '2021-04-13', '2021-04-15', 80.00), --concurso
+(9, '2022-02-16', '2022-02-18', 80.00), --concurso
+(10, '2020-03-17', '2020-12-17', 120.00), --curso
+(11, '2020-06-30', '2020-12-30', 80.00), --curso
+(12, '2020-03-17', '2021-03-17', 25.00), --cata 
+(13, '2021-07-20', '2021-07-22', 80.00), --concurso
+(14, '2021-06-26', '2021-12-26', 80.00), --curso
+(15, '2021-09-26', '2021-12-26', 80.00), --curso
+(16, '2022-01-09', '2022-01-11', 80.00), --concurso
+(17, '2021-12-08', '2021-12-08', 25.00), --cata
+(18, '2020-06-17', '2020-12-17', 50.00), --curso
+(19, '2021-10-18', '2021-10-20', 80.00), --concurso
+(20, '2021-01-26', '2021-01-26', 25.00), --cata
+(21, '2021-08-27', '2021-08-29', 80.00), --concurso
+(22, '2020-07-06', '2020-12-06', 50.00), --curso
+(23, '2022-01-05', '2022-12-05', 50.00), --curso
+(24, '2020-06-22', '2020-06-22', 25.00), --cata
+(25, '2020-01-02', '2020-01-03', 80.00), --concurso
+(26, '2020-01-27', '2020-01-28', 80.00), --concurso
+(27, '2021-12-02', '2021-12-03', 80.00), --concurso
+(28, '2021-01-05', '2021-12-05', 50.00), --curso
+(29, '2020-03-23', '2020-12-23', 80.00), --curso
+(30, '2021-06-01', '2021-06-02', 80.00), --concurso
+(31, '2020-08-30', '2020-12-30', 120.00), --curso
+(32, '2020-06-05', '2020-06-06', 80.00), --concurso
+(33, '2020-02-19', '2020-02-20', 80.00); --concurso
+
+insert into ALUMNO (dni, nombre, anoNacimiento, telefono) 
+values 
+('66105111Y', 'Melesa Schutze', '2008', '697712845'),
+('88610492W', 'Gusti Krolik', '1986', '606313220'),
+('42585658P', 'Ikey Tunbridge', '1988', '636178300'),
+('17610028D', 'Fraze Gilfillan', '2020', '641603204'),
+('55417402Y', 'Milton Seller', '1999', '658417459'),
+('51586701R', 'Minta Comizzoli', '1986', '673871410'),
+('08409727F', 'Hubie Robottom', '2015', '605209191'),
+('87823241H', 'Zondra Aisbett', '1982', '699662812'),
+('44785505C', 'Ax Newlove', '1990', '685512998'),
+('03719849J', 'Ilsa Oakenfield', '2009', '672985054'),
+('96918636V', 'Perri Barenski', '1985', '620629500'),
+('78375520F', 'Jena Kingsbury', '2019', '651216972'),
+('10796966F', 'Jehu Pether', '2016', '675977918'),
+('71418981W', 'Teodoor Beeckx', '1982', '644039940'),
+('60422125K', 'Tabb Brislan', '2008', '626531102'),
+('95768807G', 'Glen Sporle', '1990', '645608429'),
+('16481438Y', 'Laughton Kineton', '2006', '622365387'),
+('93802871Q', 'Romy Yuranovev', '2011', '692839014'),
+('44407852G', 'Maure Henrichs', '2012', '690830688'),
+('15212245E', 'Rayner Kohring', '2000', '619153435'),
+('53729830J', 'Bradford Carbine', '2011', '699774512'),
+('74941170V', 'Hussein Wreiford', '2009', '607209115'),
+('80272578W', 'Jay Dachey', '1991', '606412338'),
+('17481951L', 'Brig Kennsley', '2005', '626750975'),
+('85994937F', 'Teddie Scrivinor', '2014', '611917364'),
+('30088411H', 'Tomasine Michelin', '1995', '688819172'),
+('93211840Q', 'Ferris Roche', '2006', '665701016'),
+('29948889Z', 'Alfons Bradford', '2010', '618183642'),
+('06723090Y', 'Kienan Jacks', '2013', '633033145'),
+('57001898D', 'Kenton Entissle', '2016', '692767603'),
+('85498897P', 'Malvin Marchi', '1994', '660482197'),
+('60076830W', 'Glynda Tothe', '2013', '633978758'),
+('94358583W', 'Frederica Vlasyuk', '2013', '649076912'),
+('79500468W', 'Valma Pavel', '2009', '619300394'),
+('95619926W', 'Cthrine Brydon', '1999', '612208200'),
+('65899414K', 'Demetris Tamplin', '1984', '654319281'),
+('67777358S', 'Alene Mantione', '2019', '610999977'),
+('28657559L', 'Stan Chitty', '2017', '630631830'),
+('18508670H', 'Pepillo Moyler', '1992', '648101573'),
+('40888477C', 'Lisette Penbarthy', '1995', '658565502'),
+('17727165F', 'Kathy Loddon', '1985', '672465089'),
+('49253311F', 'Blayne Schafer', '2003', '622718618'),
+('06608238Q', 'Thorn Gagin', '2012', '638744995'),
+('47492672H', 'Olivette Haylor', '1992', '689774456'),
+('68366787T', 'Willa MacDonogh', '2004', '631017868'),
+('14775716X', 'Felicia Giorgio', '2012', '685836796'),
+('87027601V', 'Zorana Purkiss', '2013', '661370994'),
+('99489629R', 'Arlina Briscoe', '1995', '619869098'),
+('59568044E', 'Napoleon Mouth', '1987', '622270528'),
+('50292490T', 'Camila Casoni', '1981', '600850248');
+
+insert into CLIENTE (dni, nombre, telefono, email) 
+values 
+('14566131Q', 'Dionis Wreiford', '692468653', 'dwreiford0@homestead.com'),
+('52378352Y', 'Adi Kellick', '645989176', 'akellick1@telegraph.co.uk'),
+('00519871W', 'Evvie Musterd', '664571525', 'emusterd2@pinterest.com'),
+('48891974R', 'Deck Flatte', '616828075', 'dflatte3@slate.com'),
+('48405174T', 'Rani Jewks', '669124678', 'rjewks4@cpanel.net'),
+('53016955Y', 'Gunilla Cocksedge', '662386680', 'gcocksedge5@mapquest.com'),
+('17101035P', 'Arleyne Perllman', '698940302', 'aperllman6@merriam-webster.com'),
+('86300795S', 'Candy Byer', '643767675', 'cbyer7@craigslist.org'),
+('72048788M', 'Kevina Swash', '620231177', 'kswash8@spiegel.de'),
+('61148153F', 'Udell Stroulger', '618907972', 'ustroulger9@infoseek.co.jp'),
+('18768959G', 'Aharon Finnimore', '646099057', 'afinnimorea@php.net'),
+('65639461H', 'Koralle Marciek', '652102314', 'kmarciekb@mapquest.com'),
+('66720556J', 'Ivett Johnikin', '653023468', 'ijohnikinc@over-blog.com'),
+('64629104K', 'Josey Alywen', '637346559', 'jalywend@narod.ru'),
+('09180896L', 'Coletta McKinstry', '693776507', 'cmckinstrye@infoseek.co.jp'),
+('52910219Z', 'Ricki Claughton', '678619759', 'rclaughtonf@squarespace.com'),
+('72948092X', 'Delinda Gariff', '617508290', 'dgariffg@phoca.cz'),
+('56942047C', 'Theobald Ussher', '600945215', 'tussherh@plala.or.jp'),
+('13259428V', 'Tess Imort', '616192877', 'timorti@blogspot.com'),
+('80709917B', 'Bernetta Barkess', '613622213', 'bbarkessj@dot.gov'),
+('43276740N', 'Tobin Menezes', '685460540', 'tmenezesk@miibeian.gov.cn'),
+('70060882M', 'Gaby Pautard', '615503438', 'gpautardl@webeden.co.uk'),
+('15240449Z', 'Gussie Sappson', '694371017', 'gsappsonm@vistaprint.com'),
+('00261920X', 'Adelice Pirot', '666129873', 'apirotn@gnu.org'),
+('70525988C', 'Anetta Gerge', '627624818', 'agergeo@ft.com'),
+('38513147V', 'Dorris Soro', '686833987', 'dsorop@bloglines.com'),
+('63867910B', 'Costanza Halksworth', '669108596', 'chalksworthq@dropbox.com'),
+('29506090N', 'Elwyn Getch', '661363855', 'egetchr@wikimedia.org'),
+('24254803M', 'Merl Huke', '658033634', 'mhukes@ebay.co.uk'),
+('52841891Q', 'Janine Snalham', '641215270', 'jsnalhamt@nsw.gov.au'),
+('29065261W', 'Laure McNay', '672768873', 'lmcnayu@ebay.com'),
+('61110318Q', 'Brit Trivett', '624219430', 'btrivettv@weebly.com'),
+('54731096W', 'Joycelin Challenor', '695452003', 'jchallenorw@mediafire.com'),
+('72057546R', 'Marthena Hayball', '680636312', 'mhayballx@baidu.com'),
+('59180825L', 'Loren Busch', '699854852', 'lbusch18@ted.com'),
+('26575764Z', 'Uriel Twelves', '629599772', 'utwelves19@wunderground.com'),
+('62748385X', 'Lorenza Willman', '698995649', 'lwillman1a@goo.ne.jp'),
+('91520864C', 'Dario Fantham', '624123010', 'dfantham1b@liveinternet.ru'),
+('38843964N', 'Bernadette Lissaman', '675743848', 'blissaman1c@ocn.ne.jp'),
+('78004089B', 'Ardyth Itzakson', '692029317', 'aitzakson1d@toplist.cz');
+
+insert into DISTRIBUIDOR (cif, nombre, direccion, telefono) 
+values 
+('A72768604', 'Jenine Gabbitas', '1995 2nd Pass', '626163572'),
+('B99834218', 'Patrick Riglesford', '131 Redwing Way', '620331220'),
+('B54841052', 'Mandie Corby', '454 West Junction', '610295151'),
+('B84667825', 'Ramsey Maggiori', '1460 Continental Alley', '602608306'),
+('B30727992', 'Lydon Tomasello', '02332 Straubel Crossing', '663168830');
+
+INSERT INTO cerveza (nombre, cervecera, estilo, alcohol, ibu, pais, anoFabricacion) 
+VALUES  
+('Hidden Lake', 'Paranormal Brewing Co', 'Ale', 11, 0, 'Suecia', 2020),
+('Julebryg', 'Amager Bryghus', 'Lager', 6.5, 26, 'Dinamarca', 2020 ),
+('Pannepot Grand Reserva', 'De Struise Brouwers', 'Ale', 10, 27, 'Bélgica', 2010),
+('Manhattan NW', 'Cascade Brewing', 'Ale', 10.3, 0, 'EE.UU', 2015),
+('Bad Santa Christmas special', 'Privatbrauerei Schnaitl', 'Lager', 6.4 , 31, 'Austria', 2016),
+('Las Uvas De La IPA', 'Cervezas Yakka', 'Ale', 9, 0, 'España', 2018),
+('Gueuze Tilquin Draft Version', 'Gueuzerie Tilquin', 'Lambic', 5.3, 10, 'Bélgica', 2020),
+('Ohtu', 'Pohjala', 'Ale', 5.5, 40, 'Estonia', 2020 ),
+('Oude Geuze', 'Oud Beersel', 'Lambic', 6.5, 18, 'Bélgica', 2021),
+('Heretic Gluten Free', 'Reptilian Brewery', 'Ale', 8.2, 22, 'España', 2021),
+('Oude Geuze Boon', 'Brouwerj Boon', 'Lambic', 7, 22, 'Bélgica', 2021),
+('Niu De Corbs', 'Reptilian Brewery', 'Ale', 10.2, 100, 'España', 2021),
+('Aventinus Cuvée Barrique', 'G. Schneider & Sohn', 'Lager', 9.5, 0, 'Alemania', 2021),
+('Camerise Lambic', 'Brasserie Cantillon', 'Lambic', 6.5, 0, 'Bélgica', 2018),
+('Vikingathor Boris Brew', 'Cerveza SanFrutos', 'Lager', 8.2, 75, 'España', 2017),
+('My Antonia', 'Birra Del Borgo', 'Lager', 7.5, 76, 'Italia', 2018),
+('Sweet Dreams', 'La Quince Brewing Co', 'Ale', 10.5, 80, 'España', 2018),
+('Hard decision', 'La Pirata Brewing', 'Ale', 8, 30, 'España', 2018),
+('Icelandic Wee Heavy', 'Einstok Olgero', 'Ale', 8, 0, 'Islandia', 2018),
+('Lambic & Stout', 'Brewery John Martin & Brewery Timmermans', 'Lambic', 6, 37, 'Bélgica', 2020),
+('Shipping Out of Boston', 'Jacks Abby Craft Lagers', 'Lager', 5.3, 20, 'EE.UU', 2019),
+('Porn In the IPA', 'Cerveja Musa', 'Ale', 9, 100, 'Portugal', 2020),
+('Servus', 'Cierzo Brewing Co', 'Lager', 9, 25, 'España', 2021),
+('Rosé de Gambrinus', 'Brasserie Cantillon', 'Lambic', 5, 0, 'Bélgica', 2017),
+('El vendedor de Fum', 'Pochs Cervesa Artesana', 'Lager', 8, 25, 'España', 2022);
+
+insert into cata (idEvento, aforo, numeroCervezas) 
+values 
+(1, 5, 6),
+(2, 5, 4),
+(3, 6, 5),
+(4, 6, 8),
+(5, 3, 3),
+(12, 3, 4),
+(17, 4, 6),
+(20, 3, 4),
+(24, 5, 7);
+
+
+insert into asiste (dniCliente, idCata) 
+values 
+('14566131Q',1),
+('52378352Y',1),
+('00519871W',1),
+('48891974R',1),
+('48405174T',1),
+('53016955Y',17),
+('17101035P',2),
+('86300795S',2),
+('72048788M',2),
+('61148153F',2),
+('18768959G',20),
+('65639461H',20),
+('66720556J',2),
+('64629104K',3),
+('09180896L',3),
+('52910219Z',3),
+('72948092X',3),
+('56942047C',3),
+('13259428V',3),
+('80709917B',4),
+('43276740N',4),
+('70060882M',4),
+('15240449Z',4),
+('00261920X',4),
+('70525988C',4),
+('38513147V',24),
+('63867910B',24),
+('29506090N',24),
+('24254803M',5),
+('52841891Q',5),
+('29065261W',5),
+('61110318Q',12),
+('54731096W',12),
+('72057546R',12),
+('59180825L',17),
+('26575764Z',17),
+('62748385X',17),
+('91520864C',20),
+('38843964N',24),
+('78004089B',24);
+
+
+insert into concurso (idEvento, nombreJuez, ganador) 
+values 
+(6, 'Phillie Cutforth', 'J23404692'),
+(7, 'Averil Dunstan', 'F21045307'),
+(8, 'Ines Dunniom', 'D02900322'),
+(9, 'Sherie Jerzyk', 'B86757184'),
+(13, 'Cleve Woodham', 'B69170215'),
+(16, 'Carlee Forrest', 'B86757184'),
+(19, 'Kirsten Mcmanaman', 'R5448907E'),
+(21, 'Archie Truwert', 'S5028907C'),
+(25, 'Edik Lishmund', 'N6466495F'),
+(26, 'Annemarie Baser', 'F75019703'),
+(27, 'Case Foxhall', 'B69170215'),
+(30, 'Gary Clemot', 'R1707222D'),
+(32, 'Donovan MacNalley', 'B86757184'),
+(33, 'Peter Jandourek', 'B69170215');
+
+insert into cervecera (cif, idConcurso, nombre, cervezaParticipante, direccion, ciudad, pais) 
+values 
+('J23404692', 6,'Paranormal Brewing Co','Hidden Lake','1 Gina Court','Gothenburg','Suecia'),
+('R5448907E', 6,'Amager Bryghus','Julebryg','860 Montana Junction','Copenhagen','Dinamarca'),
+('G24272437', 6,'De Struise Brouwers','Pannepot Grand Reserva','2 Buena Vista Hill', 'Vleteren','Bélgica'),
+('B31073430', 6,'Cascade Brewing','Manhattan NW','14045 Stang Point','Portland','EE.UU'),
+('B27000413', 7,'Privatbrauerei Schnaitl','Bad Santa Christmas special', '033 Northview Court','Gundertshausen','Austria'),
+('F21045307', 7,'Cervezas Yakka', 'Las Uvas De La IPA','47862 Lillian Alley','Jumilla','España'),
+('S5028907C', 7,'Gueuzerie Tilquin', 'Gueuze Tilquin Draft Version','54591 Spaight Parkway','Rebecq','Bélgica'),
+('W5815532F', 7,'Pohjala','Ohtu','254 Lawn Street','Tallin','Estonia'),
+('V90365073', 8,'Oud Beersel','Oude Geuze','63 Crescent Oaks Court','Beersel','Bélgica'),
+('N6466495F', 8,'Reptilian Brewery', 'Heretic Gluten Free','84 Oakridge Pass','Sant Vicenç de Calders','España'),
+('N1020630H', 8,'Brouwerj Boon', 'Oude Geuze Boon','046 Dakota Junction','Halle','Bélgica'),
+('H25272097', 8,'Reptilian Brewery', 'Niu De Corbs', '704 Stang Crossing','Sant Vicenç de Calders','España'),
+('D02900322', 8,'G. Schneider & Sohn', 'Aventinus Cuvée Barrique','9 Mariners Cove Point','Kelheim','Alemania'),
+('B86757184', 9,'Brasserie Cantillon','Camerise Lambic','42 International Way','Anderlecht','Bélgica'),
+('Q1117700C', 9,'Cerveza SanFrutos', 'Vikingathor Boris Brew','7905 Di Loreto Hill','Segovia','España'),
+('D19225044', 9,'Birra Del Borgo','My Antonia','413 Rigney Way','Roma','Italia'),
+('J25638123', 9,'La Quince Brewing Co', 'Sweet Dreams','9292 Village Plaza', 'Madrid','España'),
+('Q8009339F', 13,'La Pirata Brewing','Hard decision', '80657 Grayhawk Avenue','Barcelona','España'),
+('H05493572', 13,'Einstok Olgero','Icelandic Wee Heavy','1158 Autumn Leaf Way',' Akureyri','Islandia'),
+('B69170215', 13,'Brewery John Martin & Brewery Timmermans','Lambic & Stout','017 Dixon Park', 'Genval','Bélgica'),
+('R1707222D', 13,'Jacks Abby Craft Lagers','Shipping Out of Boston','7 Sunbrook Park', 'Framingham','EE.UU'),
+('R6957393I', 16,'Cerveja Musa','Porn In the IPA','56804 Dakota Circle','Lisboa','Portugal'),
+('Q7101846I', 16,'Cierzo Brewing Co', 'Servus','37 Pleasure Street','Zaragoza','España'),
+('F75019703', 16,'Brasserie Cantillon','Rosé de Gambrinus','054 Northland Trail', 'Anderlecht','Bélgica'),
+('F29238532', 16,'Pochs Cervesa Artesana', 'El vendedor de Fum', '482 Sherman Road','Girona','España'),
+('J23404692', 19,'Paranormal Brewing Co','Space Junk','1 Gina Court','Gothenburg','Suecia'),
+('R5448907E', 19,'Amager Bryghus','Amager Red Cap','860 Montana Junction','Copenhagen','Dinamarca'),
+('B31073430', 19,'Cascade Brewing','Baked Apple Sour','14045 Stang Point','Portland','EE.UU'),
+('G24272437', 19,'De Struise Brouwers','Struise Rio Reserva','2 Buena Vista Hill', 'Vleteren','Bélgica'),
+('B27000413', 21,'Privatbrauerei Schnaitl','Schnaitl Radler Classic', '033 Northview Court','Gundertshausen','Austria'),
+('S5028907C', 21,'Gueuzerie Tilquin', 'Tilquin Oude Groseille','54591 Spaight Parkway','Rebecq','Bélgica'),
+('W5815532F', 21,'Pohjala','Suvila','254 Lawn Street','Tallin','Estonia'),
+('F21045307', 21,'Cervezas Yakka', 'Mary Hoppins','47862 Lillian Alley','Jumilla','España'),
+('V90365073', 25,'Oud Beersel','Schaarbeekse Kriek','63 Crescent Oaks Court','Beersel','Bélgica'),
+('N1020630H', 25,'Brouwerj Boon', 'Moriau Oude Gueuze','046 Dakota Junction','Halle','Bélgica'),
+('D02900322', 25,'G. Schneider & Sohn', 'Schneider Meine Hopfenweisse','9 Mariners Cove Point','Kelheim','Alemania'),
+('N6466495F', 25,'Reptilian Brewery', 'Reptilian Dementia 13','84 Oakridge Pass','Sant Vicenç de Calders','España'),
+('F75019703', 26,'Brasserie Cantillon','Cantillon Gueuze','054 Northland Trail', 'Anderlecht','Bélgica'),
+('Q1117700C', 26,'Cerveza SanFrutos', 'Epifanía','7905 Di Loreto Hill','Segovia','España'),
+('J25638123', 26,'La Quince Brewing Co', 'Hop Fiction','9292 Village Plaza', 'Madrid','España'),
+('H05493572', 26,'Einstok Olgero','Toasted Porter','1158 Autumn Leaf Way',' Akureyri','Islandia'),
+('B69170215', 27,'Brewery John Martin & Brewery Timmermans','Oude Kriek Lambicus','017 Dixon Park', 'Genval','Bélgica'),
+('R6957393I', 27,'Cerveja Musa','Frank Apa','56804 Dakota Circle','Lisboa','Portugal'),
+('R1707222D', 27,'Jacks Abby Craft Lagers','Blood Orange Wheat','7 Sunbrook Park', 'Framingham','EE.UU'),
+('Q7101846I', 27,'Cierzo Brewing Co', 'Mosaic','37 Pleasure Street','Zaragoza','España'),
+('F29238532', 30,'Pochs Cervesa Artesana', 'Pochs Blat', '482 Sherman Road','Girona','España'),
+('B31073430', 30,'Cascade Brewing','Blue Verbena','14045 Stang Point','Portland','EE.UU'),
+('N1020630H', 30,'Brouwerj Boon', 'Kriek Boon','046 Dakota Junction','Halle','Bélgica'),
+('R1707222D', 30,'Jacks Abby Craft Lagers','Pride and Parquet','7 Sunbrook Park', 'Framingham','EE.UU'),
+('F21045307', 32,'Cervezas Yakka', 'Azabache','47862 Lillian Alley','Jumilla','España'),
+('B86757184', 32,'Brasserie Cantillon','Cantillon Bruocsella','42 International Way','Anderlecht','Bélgica'),
+('J23404692', 32,'Paranormal Brewing Co','Neo Normal','1 Gina Court','Gothenburg','Suecia'),
+('Q7101846I', 32,'Cierzo Brewing Co', 'Bochorno','37 Pleasure Street','Zaragoza','España'),
+('H05493572', 33,'Einstok Olgero','Einstok Icelandic White','1158 Autumn Leaf Way',' Akureyri','Islandia'),
+('D02900322', 33,'G. Schneider & Sohn', 'Schneider Weisse Unser Original','9 Mariners Cove Point','Kelheim','Alemania'),
+('B69170215', 33,'Brewery John Martin & Brewery Timmermans','Framboise Lambicus','017 Dixon Park', 'Genval','Bélgica'),
+('R5448907E', 33,'Amager Bryghus','Cherokee Bill','860 Montana Junction','Copenhagen','Dinamarca');
+
+insert into curso (idEvento, nivel, plazas)
+values  
+(10,'Avanzado',25),
+(11,'Medio',25),
+(14,'Medio',25),
+(15,'Medio',25),
+(18,'Iniciación',25),
+(22,'Iniciación',25),
+(23,'Iniciación',25),
+(28,'Iniciación',25),
+(29,'Medio',20),
+(31,'Avanzado',15);      
+
+insert into cursa(dniEmp, dniAlum, idCurso)
+values  
+('81238772L','88610492W',10),
+('28101197R','17610028D',11),
+('99550653Q','87823241H',14),
+('11265865S','71418981W',15),
+('81347197G','44407852G',18),
+('62207687H','74941170V',22),
+('26676972L','85498897P',23),
+('21646501Z','67777358S',28),
+('01878277X','47492672H',29),
+('03360000V','59568044E',31);
+
+insert into organiza (dniEmp, idEvento)
+values 
+('81238772L',1),
+('28101197R',2),
+('99550653Q',3),
+('11265865S',4),
+('81347197G',5),
+('62207687H',6),
+('26676972L',7),
+('21646501Z',8),
+('01878277X',9),
+('03360000V',10),
+('52289872N',11),
+('30717140M',12),
+('26715301L',13),
+('68222344K',14),
+('26436559B',15),
+('35739949V',16),
+('67296169B',17),
+('28101197R',18),
+('99550653Q',19),
+('11265865S',20),
+('81347197G',21),
+('62207687H',22),
+('26676972L',23),
+('21646501Z',24),
+('01878277X',25),
+('26715301L',26),
+('68222344K',27),
+('26715301L',28),
+('68222344K',29),
+('11265865S',30),
+('81347197G',31),
+('62207687H',32),
+('26676972L',33);
+
+INSERT INTO valoracion (idCerveza, dniEmpleado, puntuacion, fecha) 
+VALUES  
+(1, '33798955B', 7, '2021-10-16'),
+(2, '06408178P', 8, '2021-11-03'),
+(3, '44246904G', 6, '2021-11-27'),
+(4, '36057909W', 10, '2021-12-05'),
+(5, '76167687Y', 7, '2021-12-06'),
+(6, '61881024P', 4, '2021-12-20'),
+(7, '18566274J', 1, '2021-12-15'),
+(8, '21035302C', 5, '2022-01-15'),
+(9, '68965671B', 6, '2022-02-15'),
+(10, '58815162H', 7, '2022-01-22'),
+(11, '74713126P', 4, '2022-02-15'),
+(12, '53702343Y', 2, '2022-03-22'),
+(13, '59587646T', 3, '2022-01-17'),
+(14, '52727187W', 7, '2020-04-10'),
+(15, '49663885M', 8, '2020-05-22'),
+(16, '73060008N', 9, '2021-07-01'),
+(17, '26763728M', 10, '2021-08-06'),
+(18, '20114096G', 7, '2021-09-01'),
+(19, '00377022H', 7, '2021-10-13'),
+(20, '20114096G', 8, '2021-08-15'),
+(21, '58815162H', 6, '2021-04-05'),
+(22, '73060008N', 8, '2021-06-08'),
+(23, '52727187W', 9, '2021-04-26'),
+(24, '53702343Y', 6, '2021-05-27'),
+(25, '00377022H', 8, '2020-01-15');
+
+INSERT INTO compra (idCerveza, cifDistribuidor, fechaCompra, cantidad, precio) 
+VALUES  
+( 1, 'A72768604', '2020-01-15', 20, 5.70),
+( 2, 'B99834218', '2020-04-10', 15, 7.80),
+( 3, 'B84667825', '2020-05-22', 10, 4.70),
+( 4, 'B99834218', '2020-08-30', 25, 8.20),
+( 5, 'A72768604', '2021-01-10', 30, 7.30),
+( 6, 'B30727992', '2021-04-05', 20, 4.50),
+( 7, 'B54841052', '2021-06-08', 10, 8.80),
+( 8, 'B84667825', '2021-07-25', 15, 5.20),
+( 9, 'B99834218', '2021-08-15', 25, 7.25),
+( 10, 'A72768604', '2021-10-16', 10, 6.95),
+( 11, 'B30727992', '2021-11-03', 15, 4.70),
+( 12, 'B54841052', '2021-11-27', 20, 3.99),
+( 13, 'A72768604', '2021-12-05', 30, 8.89),
+( 14, 'B99834218', '2021-12-06', 25, 4.70),
+( 15, 'B30727992', '2021-12-20', 20, 6.70),
+( 16, 'B99834218', '2021-12-15', 15, 5.50),
+( 17, 'A72768604', '2022-01-15', 40, 5.70),
+( 18, 'B54841052', '2022-02-15', 5, 7.70),
+( 19, 'B84667825', '2022-01-22', 10, 3.95),
+( 20, 'B99834218', '2022-01-17', 25, 4.70),
+( 21, 'A72768604', '2022-02-14', 15, 5.95),
+( 22, 'A72768604', '2022-02-23', 30, 9.70),
+( 23, 'B99834218', '2021-03-13', 25, 6.55),
+( 24, 'B54841052', '2021-04-26', 35, 4.50),
+( 25, 'B99834218', '2021-05-27', 25, 7.70),
+( 1, 'A72768604', '2021-06-10', 10, 3.70),
+( 7, 'B30727992', '2021-06-25', 15, 4.70),
+( 15, 'B99834218', '2021-07-01', 20, 5.90),
+( 22, 'A72768604', '2021-07-28', 30, 6.70),
+( 14, 'B99834218', '2021-08-06', 25, 8.90),
+( 23, 'B84667825', '2021-09-01', 20, 9.70),
+( 17, 'B30727992', '2021-10-13', 35, 10.99),
+( 3, 'B84667825', '2021-11-18', 15, 3.95);
+COMMIT TRANSACTION;

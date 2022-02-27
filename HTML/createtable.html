@@ -786,7 +786,7 @@
                     alcohol <span class="keyword">as</span> "Graduación"
             <span class="keyword">from</span>    cerveza
             <span class="keyword">where</span>   alcohol = (
-                    <span class="keyword">select</span> <span class="keyWord">max</span>(alcohol)
+                    <span class="keyword">select</span> <span class="keyword">max</span>(alcohol)
                     <span class="keyword">from</span> cerveza
             );
             
@@ -908,7 +908,7 @@
             <span class="comment">--Gasto total por año en cada distribuidor</span>
             <span class="keyword">select</span>  extract(year <span class="keyword">from</span> c.fechaCompra) "Año",
                     d.nombre "Distribuidor",
-                    <span class="keyWord">sum</span>((c.cantidad*c.precio)) "Gasto" 
+                    <span class="keyword">sum</span>((c.cantidad*c.precio)) "Gasto" 
             <span class="keyword">from</span>    compra c 
                     right <span class="keyword">join</span> distribuidor d <span class="keyword">on</span>(c.cifDistribuidor = d.cif)
             <span class="keyword">group by</span> extract(year <span class="keyword">from</span> c.fechaCompra), d.nombre 
@@ -944,7 +944,7 @@
             <span class="comment">--**************************</span>
             <span class="comment">--Utima prueba de cada cerveza</span>
             <span class="keyword">select</span>  cerv.nombre "Cerveza", 
-                    <span class="keyWord">max</span>(v.fecha) "Fecha ultima valoración" 
+                    <span class="keyword">max</span>(v.fecha) "Fecha ultima valoración" 
             <span class="keyword">from</span>    cerveza cerv
                     <span class="keyword">join</span> valoracion v <span class="keyword">on</span>(cerv.id = v.idCerveza)
             <span class="keyword">group by</span> "Cerveza"
@@ -955,7 +955,7 @@
             <span class="comment">--**************************</span>
             <span class="comment">--Max alcohol y menos alcohol de cada estilo</span>
             <span class="keyword">select</span>  estilo, 
-                    <span class="keyWord">max</span>(alcohol) "Mas grados", 
+                    <span class="keyword">max</span>(alcohol) "Mas grados", 
                     <span class="keyword">min</span>(alcohol) "Menos grados"
             <span class="keyword">from</span>    cerveza 
             <span class="keyword">group by</span> estilo 
@@ -1000,7 +1000,7 @@
             <span class="keyword">from</span>    cata c
                     <span class="keyword">join</span> evento e <span class="keyword">on</span> c.idEvento = e.id
             <span class="keyword">group by</span> c.idEvento, "Año"
-            <span class="keyWord">having</span>  date_part('year', e.fechainicio) <= 2020 
+            <span class="keyword">having</span>  date_part('year', e.fechainicio) <= 2020 
             <span class="keyword">order by</span> c.idEvento;
             
             <span class="comment">--**************************</span>
@@ -1055,7 +1055,7 @@
             <span class="keyword">from</span>    concurso c
                     <span class="keyword">join</span> evento e <span class="keyword">on</span> c.idEvento = e.id
             <span class="keyword">group by</span> c.idEvento, "Año","Mes de finalización"
-            <span class="keyWord">having</span>  date_part('month', e.fechafin) <= 07 
+            <span class="keyword">having</span>  date_part('month', e.fechafin) <= 07 
             <span class="keyword">order by</span> "Año","Concurso";
             
             <span class="comment">--**************************</span>
@@ -1114,7 +1114,7 @@
                     sueldo
             <span class="keyword">from</span>    empleado
             <span class="keyword">where</span>   sueldo = (
-                    <span class="keyword">select</span>  <span class="keyWord">max</span>(sueldo)
+                    <span class="keyword">select</span>  <span class="keyword">max</span>(sueldo)
                     <span class="keyword">from</span>    empleado
                     <span class="keyword">where</span>   tipoEmpleado=2
                     )
@@ -1147,7 +1147,7 @@
             <span class="keyword">select</span>  nombre,
                     anoNacimiento <span class="keyword">as</span> "Año de nacimiento"
             <span class="keyword">from</span>    alumno
-            <span class="keyword">where</span>   extract(year <span class="keyword">from</span> <span class="keyWord">now</span>())-anoNacimiento>=18
+            <span class="keyword">where</span>   extract(year <span class="keyword">from</span> <span class="keyword">now</span>())-anoNacimiento>=18
             <span class="keyword">order by</span> "Año de nacimiento";
             
             <span class="comment">--**************************</span>

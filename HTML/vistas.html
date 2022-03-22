@@ -74,6 +74,155 @@
       <a href="../TXT/view.txt" class="btn btn-success" target="_blank">Formato de texto</a>
         
     <div id="demo" class="collapse">
+      <pre>
+        <span class="comment">--*********************</span>
+        <span class="comment">--      Vistas         </span>
+        <span class="comment">--*********************</span>
+        <span class="keyword">create or replace view</span> evento_curso <span class="keyword">as</span> (
+            <span class="keyword">select</span>  e.id, e.fechainicio <span class="keyword">as</span> "Fecha Inicio", 
+                    e.fechafin <span class="keyword">as</span> "Fecha Fin", 
+                    e.importe <span class="keyword">as</span> "Importe", 
+                    c.nivel <span class="keyword">as</span> "Nivel", 
+                    c.plazas <span class="keyword">as</span> "Plazas"
+            <span class="keyword">from</span>    evento e 
+                    <span class="keyword">join</span> curso c <span class="keyword">on</span> e.id = c.idevento 
+        );
+        
+        <span class="keyword">create or replace view</span> alumnos_ultimoCurso <span class="keyword">as</span> (
+            <span class="keyword">select</span>  a.nombre, 
+                    a.dni, 
+                    a.telefono,  
+                    e.fechainicio <span class="keyword">as</span> "Fecha Inicio", 
+                    cur.idevento <span class="keyword">as</span> "Curso"
+            <span class="keyword">from</span>    alumno a
+                    <span class="keyword">join</span> cursa c <span class="keyword">on</span> a.dni = c.dnialum
+                    <span class="keyword">join</span> curso cur <span class="keyword">on</span> c.idcurso = cur.idevento
+                    <span class="keyword">join</span> evento e <span class="keyword">on</span> cur.idevento = e.id
+            <span class="keyword">where</span> <span class="keyword">extract</span>(year <span class="keyword">from</span> e.fechainicio) = <span class="keyword">extract</span>(year <span class="keyword">from</span> current_date)
+        );
+        
+        <span class="keyword">create or replace view</span> evento_concurso <span class="keyword">as</span> (
+            <span class="keyword">select</span>  e.id, 
+                    e.fechainicio <span class="keyword">as</span> "Fecha Inicio", 
+                    e.fechafin <span class="keyword">as</span> "Fecha Fin", 
+                    e.importe <span class="keyword">as</span> "Importe", 
+                    c.nombrejuez  <span class="keyword">as</span> "Nombre Juez", 
+                    c.ganador  <span class="keyword">as</span> "Ganador"
+            <span class="keyword">from</span>    evento e 
+                    <span class="keyword">join</span> concurso c <span class="keyword">on</span> e.id = c.idevento 
+        );
+        
+        <span class="keyword">create or replace view</span> evento_cata <span class="keyword">as</span> (
+            <span class="keyword">select</span>  e.id, 
+                    e.fechainicio <span class="keyword">as</span> "Fecha Inicio", 
+                    e.fechafin <span class="keyword">as</span> "Fecha Fin", 
+                    e.importe <span class="keyword">as</span> "Importe", 
+                    c.aforo <span class="keyword">as</span> "Aforo", 
+                    c.numerocervezas <span class="keyword">as</span> "Nº Cervezas"
+            <span class="keyword">from</span>    evento e 
+                    <span class="keyword">join</span> cata c <span class="keyword">on</span> e.id = c.idevento
+        );
+        
+        <span class="keyword">create or replace view</span> clientes_año_anterior <span class="keyword">as</span> (
+            <span class="keyword">select</span>  c.nombre, 
+                    c.dni, 
+                    c.email,  
+                    e.fechainicio <span class="keyword">as</span> "Fecha Inicio", 
+                    ca.idevento <span class="keyword">as</span> "Cata"
+            <span class="keyword">from</span>    cliente c
+                    <span class="keyword">join</span> asiste a <span class="keyword">on</span> c.dni = a.dnicliente
+                    <span class="keyword">join</span> cata ca <span class="keyword">on</span> a.idcata = ca.idevento
+                    <span class="keyword">join</span> evento e <span class="keyword">on</span> ca.idevento = e.id
+            <span class="keyword">where</span> <span class="keyword">extract</span>(year <span class="keyword">from</span> e.fechainicio) = <span class="keyword">extract</span>(year <span class="keyword">from</span> current_date) - 1
+        );
+        
+        <span class="keyword">create or replace view</span> cerv_dis_estilo <span class="keyword">as</span> (
+            <span class="keyword">select</span>  d.nombre <span class="keyword">as</span> "Juez", 
+                    c.nombre <span class="keyword">as</span> "Cerveza", c.estilo 
+            <span class="keyword">from</span>    distribuidor d 
+                    <span class="keyword">join</span> compra co <span class="keyword">on</span> d.cif = co.cifdistribuidor
+                    <span class="keyword">join</span> cerveza c <span class="keyword">on</span> co.idcerveza = c.id
+            <span class="keyword">order by</span> c.estilo
+        );
+        
+        
+        <span class="keyword">create or replace view</span> valor_cerv_ganadora <span class="keyword">as</span> (
+            <span class="keyword">with</span> puntuacion_cervezas <span class="keyword">as</span> (
+                 <span class="keyword">select</span>  cerv.nombre <span class="keyword">as</span> Cerveza, 
+                         v.puntuacion <span class="keyword">as</span> Puntuacion, 
+                         v.fecha <span class="keyword">as</span> "Fecha Valoración"
+                 <span class="keyword">from</span>    valoracion v
+                         <span class="keyword">join</span> cerveza cerv <span class="keyword">on</span> v.idcerveza = cerv.id
+            )
+            <span class="keyword">select</span>  cerv.cervezaparticipante, 
+                    punt.puntuacion, 
+                    punt."Fecha Valoración", 
+                    e.fechafin
+            <span class="keyword">from</span>    puntuacion_cervezas punt
+                    <span class="keyword">join</span> cervecera cerv <span class="keyword">on</span> punt.Cerveza = cerv.cervezaparticipante
+                    <span class="keyword">join</span> concurso con <span class="keyword">on</span> cerv.idconcurso = con.idevento
+                    <span class="keyword">join</span> evento e <span class="keyword">on</span> e.id = con.idevento 
+            <span class="keyword">where</span> con.ganador = cerv.cif
+        );
+        
+        <span class="comment">--         CTE</span>
+        <span class="comment">--**************************</span>
+        <span class="comment">--          38</span>
+        <span class="comment">--**************************</span>
+        <span class="comment">--Empleado Organizador con el sueldo mas bajo</span>
+        <span class="keyword">select</span>  nombre,
+                sueldo
+        <span class="keyword">from</span>    empleado
+        <span class="keyword">where</span>   sueldo = (
+                <span class="keyword">select</span>  <span class="keyword">min</span>(sueldo)
+                <span class="keyword">from</span>    empleado
+                <span class="keyword">where</span>   tipoEmpleado=2
+                )
+        <span class="keyword">order by</span> nombre;
+        
+        
+        <span class="keyword">with</span> sueldo_bajo <span class="keyword">as</span> (
+                <span class="keyword">select</span>  <span class="keyword">min</span>(sueldo) <span class="keyword">as</span> minSueldo
+                <span class="keyword">from</span>    empleado
+                <span class="keyword">where</span>   tipoEmpleado=2
+        )
+        <span class="keyword">select</span>  nombre,
+                sueldo
+        <span class="keyword">from</span>    empleado
+        <span class="keyword">where</span>   sueldo = (
+                        <span class="keyword">select</span> minSueldo 
+                        <span class="keyword">from</span> sueldo_bajo
+                )
+        <span class="keyword">order by</span> nombre;
+        <span class="comment">--**************************</span>
+        <span class="comment">--            39</span>
+        <span class="comment">--**************************</span>
+        <span class="comment">--empleado Organizador con el sueldo mas alto</span>
+        <span class="keyword">select</span>  nombre,
+                sueldo
+        <span class="keyword">from</span>    empleado
+        <span class="keyword">where</span>   sueldo = (
+                <span class="keyword">select</span>  <span class="keyword">max</span>(sueldo)
+                <span class="keyword">from</span>    empleado
+                <span class="keyword">where</span>   tipoEmpleado=2
+                )
+        <span class="keyword">order by</span> nombre;
+        
+        
+        <span class="keyword">with</span> sueldo_alto <span class="keyword">as</span> (
+                <span class="keyword">select</span>  <span class="keyword">max</span>(sueldo) <span class="keyword">as</span> maxSueldo
+                <span class="keyword">from</span>    empleado
+                <span class="keyword">where</span>   tipoEmpleado=2
+        )
+        <span class="keyword">select</span>  nombre,
+                sueldo
+        <span class="keyword">from</span>    empleado
+        <span class="keyword">where</span>   sueldo = (
+                        <span class="keyword">select</span> maxSueldo 
+                        <span class="keyword">from</span> sueldo_alto
+                )
+        <span class="keyword">order by</span> nombre;
+      </pre>
       <a href="#demo" class="btn btn-success" data-bs-toggle="collapse">Ocultar vistas</a>
     </div>
   </div>
@@ -82,8 +231,16 @@
       <h2 class="text-success">5.2. Secuencias.</h2>
       <a href="#demo1" class="btn btn-success" data-bs-toggle="collapse">Secuencias</a>
       <a href="../TXT/sequence.txt" class="btn btn-success" target="_blank">Formato de texto</a>
-        
       <div id="demo1" class="collapse">
+        <pre>
+          <span class="comment">--******************</span>
+          <span class="comment">--   SECUENCIA</span>
+          <span class="comment">--******************</span>
+          <span class="keyword">create sequence</span> seq1 
+          <span class="keyword">as</span> int
+          <span class="keyword">increment</span> 1
+          <span class="keyword">start</span> 34;
+        </pre>
       <a href="#demo1" class="btn btn-success" data-bs-toggle="collapse">Ocultar secuencias</a>
       </div>
     </div>
@@ -92,13 +249,90 @@
       <h2 class="text-success">5.3. Índices.</h2>
       <a href="#demo2" class="btn btn-success" data-bs-toggle="collapse">Índices</a>
       <a href="../TXT/index.txt" class="btn btn-success" target="_blank">Formato de texto</a>
-        
       <div id="demo2" class="collapse">
+      <pre>
+        <span clas="comment">--********************</span>
+        <span clas="comment">--    CREATE INDEXS</span>
+        <span clas="comment">--********************</span>
+        <span class="keyword">create index</span> Ievento <span class="keyword">on</span> evento(id);
+        <span class="keyword">create index</span> Icerveza <span class="keyword">on</span> cerveza(id);
+        <span class="keyword">create index</span> Ivaloracion <span class="keyword">on</span> valoracion(idCerveza);
+        <span class="keyword">create index</span> Ivaloracion2 <span class="keyword">on</span> valoracion(dniEmpleado);
+        <span class="keyword">create index</span> Iconcurso <span class="keyword">on</span> concurso(idEvento);
+        
+        <span clas="comment">--********************</span>
+        <span clas="comment">--     DROP INDEXS</span>
+        <span clas="comment">--********************</span>
+        <span class="keyword">drop index</span> Ievento;
+        <span class="keyword">drop index</span> Icerveza;
+        <span class="keyword">drop index</span> Ivaloracion;
+        <span class="keyword">drop index</span> Ivaloracion2;
+        <span class="keyword">drop index</span> Iconcurso;
+        
+        <span clas="comment">--************************</span>
+        <span clas="comment">--    ANÁLISIS DE QUERY</span>
+        <span clas="comment">--************************</span>
+        <span class="keyword">explain analyze select</span> * <span class="keyword">from</span> valor_cerv_ganadora;
+        
+        <span clas="comment">--********************************</span>
+        <span clas="comment">--    RESULTADO SIN INDICES </span>
+        <span clas="comment">--********************************</span>
+        <span class="keyword"><span class="keyword">Hash</span> Join</span>  (cost=6.12..8.50 rows=25 width=28) (actual time=0.202..0.314 rows=25 loops=1)
+           <span class="keyword"><span class="keyword">Hash</span> Cond</span>: (cerv.idconcurso = con.idevento)
+           ->  <span class="keyword"><span class="keyword">Hash</span> Join</span>  (cost=3.20..5.24 rows=25 width=28) (actual time=0.114..0.193 rows=25 loops=1)
+                 <span class="keyword"><span class="keyword">Hash</span> Cond</span>: ((cerv.cervezaparticipante)::text = (cerv_1.nombre)::text)
+                 ->  <spaN class="keyword">Seq Scan</span> <span class="keyword">on</span> cervecera cerv  (cost=0.00..1.57 rows=57 width=20) (actual time=0.003..0.031 rows=57 loops=1)
+                 ->  <span class="keyword">Hash</span>  (cost=2.89..2.89 rows=25 width=126) (actual time=0.105..0.110 rows=25 loops=1)
+                       <span class="keyword">Buckets</span>: 1024  <span class="keyword">Batches</span>: 1  Memory Usage: 10kB
+                       ->  <span class="keyword"><span class="keyword">Hash</span> Join</span>  (cost=1.56..2.89 rows=25 width=126) (actual time=0.048..0.091 rows=25 loops=1)
+                             <span class="keyword"><span class="keyword">Hash</span> Cond</span>: (v.idcerveza = cerv_1.id)
+                             ->  <spaN class="keyword">Seq Scan</span> <span class="keyword">on</span> valoracion v  (cost=0.00..1.25 rows=25 width=12) (actual time=0.002..0.015 rows=25 loops=1)
+                             ->  <span class="keyword">Hash</span>  (cost=1.25..1.25 rows=25 width=122) (actual time=0.031..0.032 rows=25 loops=1)
+                                   <span class="keyword">Buckets</span>: 1024  <span class="keyword">Batches</span>: 1  Memory Usage: 10kB
+                                   ->  <spaN class="keyword">Seq Scan</span> <span class="keyword">on</span> cerveza cerv_1  (cost=0.00..1.25 rows=25 width=122) (actual time=0.003..0.016 rows=25 loops=1)
+           ->  <span class="keyword">Hash</span>  (cost=2.74..2.74 rows=14 width=12) (actual time=0.082..0.086 rows=14 loops=1)
+                 <span class="keyword">Buckets</span>: 1024  <span class="keyword">Batches</span>: 1  Memory Usage: 9kB
+                 ->  <span class="keyword"><span class="keyword">Hash</span> Join</span>  (cost=1.32..2.74 rows=14 width=12) (actual time=0.038..0.076 rows=14 loops=1)
+                       <span class="keyword"><span class="keyword">Hash</span> Cond</span>: (e.id = con.idevento)
+                       ->  <spaN class="keyword">Seq Scan</span> <span class="keyword">on</span> evento e  (cost=0.00..1.33 rows=33 width=8) (actual time=0.008..0.024 rows=33 loops=1)
+                       ->  <span class="keyword">Hash</span>  (cost=1.14..1.14 rows=14 width=4) (actual time=0.021..0.022 rows=14 loops=1)
+                             <span class="keyword">Buckets</span>: 1024  <span class="keyword">Batches</span>: 1  Memory Usage: 9kB
+                             ->  <spaN class="keyword">Seq Scan</span> <span class="keyword">on</span> concurso con  (cost=0.00..1.14 rows=14 width=4) (actual time=0.003..0.011 rows=14 loops=1)
+         <span claSs="keyword">Planning Time</span>: 0.331 ms
+         <span clasS="keyword">Execution Time</span>: 0.369 ms
+        
+        <span clas="comment">--********************************</span>
+        <span clas="comment">--    RESULTADO USANDO INDICES</span>
+        <span clas="comment">--********************************</span>
+         <span class="keyword"><span class="keyword">Hash</span> Join</span>  (cost=6.12..8.50 rows=25 width=28) (actual time=0.198..0.314 rows=25 loops=1)
+           <span class="keyword"><span class="keyword">Hash</span> Cond</span>: (cerv.idconcurso = con.idevento)
+           ->  <span class="keyword"><span class="keyword">Hash</span> Join</span>  (cost=3.20..5.24 rows=25 width=28) (actual time=0.113..0.196 rows=25 loops=1)
+                 <span class="keyword"><span class="keyword">Hash</span> Cond</span>: ((cerv.cervezaparticipante)::text = (cerv_1.nombre)::text)
+                 ->  <spaN class="keyword">Seq Scan</span> <span class="keyword">on</span> cervecera cerv  (cost=0.00..1.57 rows=57 width=20) (actual time=0.003..0.032 rows=57 loops=1)
+                 ->  <span class="keyword">Hash</span>  (cost=2.89..2.89 rows=25 width=126) (actual time=0.105..0.110 rows=25 loops=1)
+                       <span class="keyword">Buckets</span>: 1024  <span class="keyword">Batches</span>: 1  Memory Usage: 10kB
+                       ->  <span class="keyword"><span class="keyword">Hash</span> Join</span>  (cost=1.56..2.89 rows=25 width=126) (actual time=0.036..0.089 rows=25 loops=1)
+                             <span class="keyword"><span class="keyword">Hash</span> Cond</span>: (v.idcerveza = cerv_1.id)
+                             ->  <spaN class="keyword">Seq Scan</span> <span class="keyword">on</span> valoracion v  (cost=0.00..1.25 rows=25 width=12) (actual time=0.002..0.017 rows=25 loops=1)
+                             ->  <span class="keyword">Hash</span>  (cost=1.25..1.25 rows=25 width=122) (actual time=0.030..0.032 rows=25 loops=1)
+                                   <span class="keyword">Buckets</span>: 1024  <span class="keyword">Batches</span>: 1  Memory Usage: 10kB
+                                   ->  <spaN class="keyword">Seq Scan</span> <span class="keyword">on</span> cerveza cerv_1  (cost=0.00..1.25 rows=25 width=122) (actual time=0.002..0.015 rows=25 loops=1)
+           ->  <span class="keyword">Hash</span>  (cost=2.74..2.74 rows=14 width=12) (actual time=0.080..0.084 rows=14 loops=1)
+                 <span class="keyword">Buckets</span>: 1024  <span class="keyword">Batches</span>: 1  Memory Usage: 9kB
+                 ->  <span class="keyword"><span class="keyword">Hash</span> Join</span>  (cost=1.32..2.74 rows=14 width=12) (actual time=0.035..0.074 rows=14 loops=1)
+                       <span class="keyword"><span class="keyword">Hash</span> Cond</span>: (e.id = con.idevento)
+                       ->  <spaN class="keyword">Seq Scan</span> <span class="keyword">on</span> evento e  (cost=0.00..1.33 rows=33 width=8) (actual time=0.004..0.021 rows=33 loops=1)
+                       ->  <span class="keyword">Hash</span>  (cost=1.14..1.14 rows=14 width=4) (actual time=0.021..0.022 rows=14 loops=1)
+                             <span class="keyword">Buckets</span>: 1024  <span class="keyword">Batches</span>: 1  Memory Usage: 9kB
+                             ->  <spaN class="keyword">Seq Scan</span> <span class="keyword">on</span> concurso con  (cost=0.00..1.14 rows=14 width=4) (actual time=0.003..0.011 rows=14 loops=1)
+         <span claSs="keyword">Planning Time</span>: 0.581 ms
+         <span clasS="keyword">Execution Time</span>: 0.352 ms
+      </pre>
       <a href="#demo2" class="btn btn-success" data-bs-toggle="collapse">Ocultar índices</a>
       </div>
    </div>
 
- <footer class="container-fluid p-2 mt-4 bg-success text-white text-center">
+ <footer class="container-fluid p-2 mt-4 bg-success text-white text-center footer">
     <a href="avisolegal.html" class="text-light" target="_blank">Aviso legal</a>
   </footer>
   

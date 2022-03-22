@@ -1,0 +1,5 @@
+--Secuencia--
+create sequence seq1 
+as int
+increment 1
+start 34;

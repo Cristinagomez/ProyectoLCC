@@ -1,0 +1,114 @@
+
+--Vistas--
+
+create or replace view evento_curso as (
+    select e.id, e.fechainicio as "Fecha Inicio", e.fechafin as "Fecha Fin", e.importe as "Importe", c.nivel as "Nivel", c.plazas as "Plazas"
+    from evento e join curso c on e.id = c.idevento 
+);
+
+create or replace view alumnos_ultimoCurso as (
+    select a.nombre, a.dni, a.telefono,  e.fechainicio as "Fecha Inicio", cur.idevento as "Curso"
+    from alumno a
+    join cursa c on a.dni = c.dnialum
+    join curso cur on c.idcurso = cur.idevento
+    join evento e on cur.idevento = e.id
+    where extract(year from e.fechainicio) = extract(year from current_date)
+);
+
+create or replace view evento_concurso as (
+    select e.id, e.fechainicio as "Fecha Inicio", e.fechafin as "Fecha Fin", e.importe as "Importe", c.nombrejuez  as "Nombre Juez", c.ganador  as "Ganador"
+    from evento e join concurso c on e.id = c.idevento 
+);
+
+create or replace view evento_cata as (
+    select e.id, e.fechainicio as "Fecha Inicio", e.fechafin as "Fecha Fin", e.importe as "Importe", c.aforo as "Aforo", c.numerocervezas as "Nº Cervezas"
+    from evento e join cata c on e.id = c.idevento 
+);
+
+create or replace view clientes_año_anterior as (
+    select c.nombre, c.dni, c.email,  e.fechainicio as "Fecha Inicio", ca.idevento as "Cata"
+    from cliente c
+    join asiste a on c.dni = a.dnicliente
+    join cata ca on a.idcata = ca.idevento
+    join evento e on ca.idevento = e.id
+    where extract(year from e.fechainicio) = extract(year from current_date) - 1
+);
+
+create or replace view cerv_dis_estilo as (
+    select d.nombre as "Juez", c.nombre as "Cerveza", c.estilo 
+    from distribuidor d 
+    join compra co on d.cif = co.cifdistribuidor
+    join cerveza c on co.idcerveza = c.id
+    order by c.estilo
+);
+
+
+create or replace view valor_cerv_ganadora as (
+    with puntuacion_cervezas as (
+    select cerv.nombre as Cerveza, v.puntuacion as Puntuacion , v.fecha as "Fecha Valoración"
+    from valoracion v
+    join cerveza cerv on v.idcerveza = cerv.id
+    )
+    select cerv.cervezaparticipante, punt.puntuacion, punt."Fecha Valoración" , e.fechafin
+    from puntuacion_cervezas punt
+    join cervecera cerv on punt.Cerveza = cerv.cervezaparticipante
+    join concurso con on cerv.idconcurso = con.idevento
+    join evento e on e.id = con.idevento 
+    where con.ganador = cerv.cif
+);
+
+--CTE--
+--**************************
+--38 
+--**************************
+-- empleado Organizador con el sueldo mas bajo
+select  nombre,
+        sueldo
+from    empleado
+where   sueldo = (
+        select  min(sueldo)
+        from    empleado
+        where   tipoEmpleado=2
+        )
+order by nombre;
+
+
+with sueldo_bajo as (
+    select min(sueldo) as minSueldo
+        from    empleado
+        where   tipoEmpleado=2
+)
+select nombre,
+        sueldo
+from    empleado
+where   sueldo = (select minSueldo from sueldo_bajo)
+order by nombre;
+--**************************
+--39
+--**************************
+--empleado Organizador con el sueldo mas alto
+select  nombre,
+        sueldo
+from    empleado
+where   sueldo = (
+        select  max(sueldo)
+        from    empleado
+        where   tipoEmpleado=2
+        )
+order by nombre;
+
+
+with sueldo_alto as (
+    select max(sueldo) as maxSueldo
+        from    empleado
+        where   tipoEmpleado=2
+)
+select nombre,
+        sueldo
+from    empleado
+where   sueldo = (select maxSueldo from sueldo_alto)
+order by nombre;
+
+
+
+

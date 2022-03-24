@@ -233,13 +233,101 @@
       <a href="../TXT/sequence.txt" class="btn btn-success" target="_blank">Formato de texto</a>
       <div id="demo1" class="collapse">
         <pre>
-          <span class="comment">--******************</span>
-          <span class="comment">--   SECUENCIA</span>
-          <span class="comment">--******************</span>
-          <span class="keyword">create sequence</span> seq1 
+          <span class="comment">--**************</span>
+          <span class="comment">--  SECUENCIA</span>
+          <span class="comment">--**************</span>
+          <span class="keyword">create sequence</span> seq_evento
           <span class="keyword">as</span> int
           <span class="keyword">increment</span> 1
           <span class="keyword">start</span> 34;
+          
+          <span class="comment">--*****************************************</span>
+          <span class="comment">--   COMPROBACIÓN ANTES DE LA SECUENCIA</span>
+          <span class="comment">--*****************************************</span>
+          <span class="comment">--lcc=> select * from evento;</span>
+          <span class="comment">-- id | fechainicio |  fechafin  | importe </span>
+          <span class="comment">------+-------------+------------+---------</span>
+          <span class="comment">--  1 | 2020-02-23  | 2020-02-23 |   25.00</span>
+          <span class="comment">--  2 | 2020-09-13  | 2020-09-13 |   25.00</span>
+          <span class="comment">--  3 | 2021-01-12  | 2021-01-12 |   25.00</span>
+          <span class="comment">--  4 | 2021-01-11  | 2021-01-11 |   25.00</span>
+          <span class="comment">--  5 | 2020-10-29  | 2020-10-29 |   25.00</span>
+          <span class="comment">--  6 | 2021-04-15  | 2021-04-17 |   80.00</span>
+          <span class="comment">--  7 | 2020-01-21  | 2020-01-23 |   80.00</span>
+          <span class="comment">--  8 | 2021-04-13  | 2021-04-15 |   80.00</span>
+          <span class="comment">--  9 | 2022-02-16  | 2022-02-18 |   80.00</span>
+          <span class="comment">-- 10 | 2020-03-17  | 2020-12-17 |  120.00</span>
+          <span class="comment">-- 11 | 2020-06-30  | 2020-12-30 |   80.00</span>
+          <span class="comment">-- 12 | 2020-03-17  | 2021-03-17 |   25.00</span>
+          <span class="comment">-- 13 | 2021-07-20  | 2021-07-22 |   80.00</span>
+          <span class="comment">-- 14 | 2021-06-26  | 2021-12-26 |   80.00</span>
+          <span class="comment">-- 15 | 2021-09-26  | 2021-12-26 |   80.00</span>
+          <span class="comment">-- 16 | 2022-01-09  | 2022-01-11 |   80.00</span>
+          <span class="comment">-- 17 | 2021-12-08  | 2021-12-08 |   25.00</span>
+          <span class="comment">-- 18 | 2020-06-17  | 2020-12-17 |   50.00</span>
+          <span class="comment">-- 19 | 2021-10-18  | 2021-10-20 |   80.00</span>
+          <span class="comment">-- 20 | 2021-01-26  | 2021-01-26 |   25.00</span>
+          <span class="comment">-- 21 | 2021-08-27  | 2021-08-29 |   80.00</span>
+          <span class="comment">-- 22 | 2020-07-06  | 2020-12-06 |   50.00</span>
+          <span class="comment">-- 23 | 2022-01-05  | 2022-12-05 |   50.00</span>
+          <span class="comment">-- 24 | 2020-06-22  | 2020-06-22 |   25.00</span>
+          <span class="comment">-- 25 | 2020-01-02  | 2020-01-03 |   80.00</span>
+          <span class="comment">-- 26 | 2020-01-27  | 2020-01-28 |   80.00</span>
+          <span class="comment">-- 27 | 2021-12-02  | 2021-12-03 |   80.00</span>
+          <span class="comment">-- 28 | 2021-01-05  | 2021-12-05 |   50.00</span>
+          <span class="comment">-- 29 | 2020-03-23  | 2020-12-23 |   80.00</span>
+          <span class="comment">-- 30 | 2021-06-01  | 2021-06-02 |   80.00</span>
+          <span class="comment">-- 31 | 2020-08-30  | 2020-12-30 |  120.00</span>
+          <span class="comment">-- 32 | 2020-06-05  | 2020-06-06 |   80.00</span>
+          <span class="comment">-- 33 | 2020-02-19  | 2020-02-20 |   80.00</span>
+          <span class="comment">--(33 rows)</span>
+          
+          <span class="keyword">insert into</span> EVENTO (ID, fechaInicio, fechaFin, importe) 
+          <span class="keyword">values</span> 
+          (<span class="keyword">nextval</span>('seq_evento'), '2020-02-24', '2020-02-24', 25.00);
+          
+          <span class="comment">--*****************************************</span>
+          <span class="comment">--   COMPROBACIÓN DESPUES DE LA SECUENCIA</span>
+          <span class="comment">--*****************************************</span>
+          <span class="comment">--lcc=> select * from evento;</span>
+          <span class="comment">-- id | fechainicio |  fechafin  | importe </span>
+          <span class="comment">------+-------------+------------+---------</span>
+          <span class="comment">--  1 | 2020-02-23  | 2020-02-23 |   25.00</span>
+          <span class="comment">--  2 | 2020-09-13  | 2020-09-13 |   25.00</span>
+          <span class="comment">--  3 | 2021-01-12  | 2021-01-12 |   25.00</span>
+          <span class="comment">--  4 | 2021-01-11  | 2021-01-11 |   25.00</span>
+          <span class="comment">--  5 | 2020-10-29  | 2020-10-29 |   25.00</span>
+          <span class="comment">--  6 | 2021-04-15  | 2021-04-17 |   80.00</span>
+          <span class="comment">--  7 | 2020-01-21  | 2020-01-23 |   80.00</span>
+          <span class="comment">--  8 | 2021-04-13  | 2021-04-15 |   80.00</span>
+          <span class="comment">--  9 | 2022-02-16  | 2022-02-18 |   80.00</span>
+          <span class="comment">-- 10 | 2020-03-17  | 2020-12-17 |  120.00</span>
+          <span class="comment">-- 11 | 2020-06-30  | 2020-12-30 |   80.00</span>
+          <span class="comment">-- 12 | 2020-03-17  | 2021-03-17 |   25.00</span>
+          <span class="comment">-- 13 | 2021-07-20  | 2021-07-22 |   80.00</span>
+          <span class="comment">-- 14 | 2021-06-26  | 2021-12-26 |   80.00</span>
+          <span class="comment">-- 15 | 2021-09-26  | 2021-12-26 |   80.00</span>
+          <span class="comment">-- 16 | 2022-01-09  | 2022-01-11 |   80.00</span>
+          <span class="comment">-- 17 | 2021-12-08  | 2021-12-08 |   25.00</span>
+          <span class="comment">-- 18 | 2020-06-17  | 2020-12-17 |   50.00</span>
+          <span class="comment">-- 19 | 2021-10-18  | 2021-10-20 |   80.00</span>
+          <span class="comment">-- 20 | 2021-01-26  | 2021-01-26 |   25.00</span>
+          <span class="comment">-- 21 | 2021-08-27  | 2021-08-29 |   80.00</span>
+          <span class="comment">-- 22 | 2020-07-06  | 2020-12-06 |   50.00</span>
+          <span class="comment">-- 23 | 2022-01-05  | 2022-12-05 |   50.00</span>
+          <span class="comment">-- 24 | 2020-06-22  | 2020-06-22 |   25.00</span>
+          <span class="comment">-- 25 | 2020-01-02  | 2020-01-03 |   80.00</span>
+          <span class="comment">-- 26 | 2020-01-27  | 2020-01-28 |   80.00</span>
+          <span class="comment">-- 27 | 2021-12-02  | 2021-12-03 |   80.00</span>
+          <span class="comment">-- 28 | 2021-01-05  | 2021-12-05 |   50.00</span>
+          <span class="comment">-- 29 | 2020-03-23  | 2020-12-23 |   80.00</span>
+          <span class="comment">-- 30 | 2021-06-01  | 2021-06-02 |   80.00</span>
+          <span class="comment">-- 31 | 2020-08-30  | 2020-12-30 |  120.00</span>
+          <span class="comment">-- 32 | 2020-06-05  | 2020-06-06 |   80.00</span>
+          <span class="comment">-- 33 | 2020-02-19  | 2020-02-20 |   80.00</span>
+          <span class="comment">-- 34 | 2020-02-24  | 2020-02-24 |   25.00</span>
+          <span class="comment">--(34 rows)</span>
+          
         </pre>
       <a href="#demo1" class="btn btn-success" data-bs-toggle="collapse">Ocultar secuencias</a>
       </div>

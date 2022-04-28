@@ -1,0 +1,140 @@
+--Esta funcion recibira dos puntuaciones y devolvera el numero de cervezas
+--encontradas entre ese rango de puntuaciones y mostrara alguno de sus datos
+
+create or replace function num_cervezas_rango_puntuacion(
+    p_min_valoracion valoracion.puntuacion%type,
+    p_max_valoracion valoracion.puntuacion%type
+)
+    returns int
+    language plpgsql
+as
+$$
+declare
+    v_num_cerveza integer := 0;
+    v_cerveza cerveza%rowtype;
+
+
+    cur_cerveza CURSOR FOR
+        select * from cerveza c
+                          join valoracion v on (c.id = v.idCerveza)
+        where v.puntuacion BETWEEN p_min_valoracion AND p_max_valoracion;
+begin
+
+    if ((p_min_valoracion < 1 or p_min_valoracion > 10) and
+        (p_max_valoracion < 1 or p_max_valoracion > 10))then
+        raise exception 'El rango debe estar entre 1 y 10'
+            using errcode = 'L0001';
+    end if;
+     if (p_min_valoracion > p_max_valoracion) then
+        raise exception 'El primer valor debe ser menor que el segundo'
+            using errcode = 'L0002';
+
+    end if;
+
+    -- abrimos el cursor
+    open cur_cerveza;
+
+    fetch cur_cerveza into v_cerveza;
+
+    while (found) loop
+            raise notice 'Cerveza %-%, estilo: %, alcohol: %, ibu: %',
+                v_cerveza.id,v_cerveza.nombre, v_cerveza.estilo, v_cerveza.alcohol, v_cerveza.ibu;
+            v_num_cerveza := v_num_cerveza + 1;
+
+
+-- obtener siguiente cerveza del cursor
+            fetch cur_cerveza into v_cerveza;
+        end loop;
+
+    raise notice 'Número de cervezas encontradas %', v_num_cerveza;
+-- cerrar cursor
+    close cur_cerveza;
+    return v_num_cerveza;
+exception
+    when sqlstate 'L0001' then
+        raise;
+    when sqlstate 'L0002' then
+        raise;
+    when others then
+        raise exception 'Se ha producido un error inesperado';
+end;
+$$;
+
+
+-----------------Prueba-----------------
+select num_cervezas_rango_puntuacion(4,8);
+
+
+--Funcion que obtiene las iniciales de los alumnos
+create function inicialesdealumnos() returns character varying
+    language plpgsql
+as
+$$
+declare
+    cur_alumnos cursor for select * from alumno;
+    v_idCurso record;
+    v_alumno varchar;
+    v_auxIniciales varchar;
+begin
+    for item in cur_alumnos loop
+            v_alumno=item.nombre;
+
+            select idcurso
+            into v_idCurso
+            from cursa c
+            where c.dnialum=item.dni;
+
+            v_auxIniciales = concat( v_auxIniciales, ';',left( split_part(item.nombre,' ',1),1), left( split_part(item.nombre,' ',2),1) );
+        end loop;
+
+    return v_auxIniciales;
+
+exception
+    when too_many_rows then
+        raise exception 'El alumno % esta inscrito en mas de un curso', v_alumno;
+    when others then
+        raise ;
+end;
+$$;
+
+-- Función que cuenta cuantas veces a participado una cervecera en concursos --
+
+create or replace function get_partipaciones_cervecera(
+    p_cif_cerv cervecera.cif%type)
+    returns integer
+    language plpgsql
+as
+$$
+declare
+ v_num_participaciones integer;
+begin
+ --
+ select count(*)
+ into strict v_num_participaciones
+ from cervecera
+ where cif = p_cif_cerv;
+
+ if found then
+     case v_num_participaciones
+         when 0 then
+            raise notice 'La cervecera no ha participado en concursos anteriores.';
+         else
+             raise notice 'Ya existen datos guardados para esta cervecera, ha participado % veces.', v_num_participaciones;
+    end case;
+ end if;
+
+ return v_num_participaciones;
+
+exception
+    when no_data_found then
+        raise exception 'No hay datos';
+    when others then
+        raise exception 'Ha ocurrido un error no esperado';
+end;
+$$
+
+-----------------Prueba-----------------
+-- Muestra un caso en el que la cervecera ha participado --
+select get_partipaciones_cervecera('G24272437');
+-- Muestra un caso en el que la cervecera no ha participado --
+select get_partipaciones_cervecera('G24272438');

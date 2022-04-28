@@ -5,7 +5,7 @@
 
 create procedure actualizar_valoracion_cerveza(
     p_id_cerveza integer,
-    p_dni_empleado character varying,
+    p_dni_empleado varchar,
     p_puntuacion integer)
     language plpgsql
 as

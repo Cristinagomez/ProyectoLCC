@@ -1,0 +1,163 @@
+----------------------Procedimientos--------------------------------
+--Este procedimiento sirve para actualizar la valoracion de una cerveza,
+--pasamos por parametro el id de la cerveza y el dni del empleado que la valora.
+--como fecha pondremos la fecha en la que se realiza el cambio
+
+create procedure actualizar_valoracion_cerveza(
+    p_id_cerveza integer,
+    p_dni_empleado varchar,
+    p_puntuacion integer)
+    language plpgsql
+as
+$$
+declare
+    c_tipo_empleado int := 1;
+    v_empleado empleado%rowtype;
+    v_cerveza  cerveza.id%type;
+   v_empleado_exist empleado.dni%type;
+
+begin
+
+    if (p_puntuacion < 1 or p_puntuacion > 10) then
+        raise exception 'La puntuacion debe ser entre 1 y 10'
+            using errcode = 'L0001';
+    end if;
+
+    select id into v_cerveza
+    from cerveza where id = p_id_cerveza;
+
+
+    -- comprobar si el empleado es somelier
+    select * into v_empleado
+    from empleado
+    where dni = p_dni_empleado;
+
+    if v_cerveza is null then
+    raise exception 'Id de cerveza no encontrado'
+        using errcode = 'L0003';
+    end if;
+
+    if v_empleado_exist is null then
+        raise exception 'El dni introducido no existe. '
+            using errcode = 'L0004';
+    end if;
+
+    if v_empleado.tipoEmpleado <> c_tipo_empleado then
+        raise exception 'Empleado %, no puede modificar la valoracion porque no es somelier',
+            v_empleado.nombre
+        using errcode = 'L0002';
+    else
+        -- cambiar la puntuacion de la cerveza
+        update valoracion
+        set dniEmpleado = p_dni_empleado,
+            puntuacion = p_puntuacion,
+            fecha = date(now())
+        where idCerveza = p_id_cerveza;
+        raise notice 'Valoracion modificada correctamente';
+    end if;
+
+exception
+
+    when sqlstate 'L0001' then
+        raise;
+    when sqlstate 'L0002' then
+        raise;
+    when sqlstate 'L0003' then
+        raise;
+    when sqlstate 'L0004' then
+        raise;
+    when others then
+        raise exception 'Se ha producido un error inesperado';
+end;
+$$;
+
+-----------------Prueba-----------------
+call actualizar_valoracion_cerveza(25, '00377022H', 8);
+
+
+
+--Para eliminar un curso no tiene que haber alumnos inscritos
+
+create or replace procedure borrarCurso(
+    p_idCurso curso.idEvento%type
+)
+language plpgsql
+as
+$$
+declare
+    v_curso integer;
+begin
+    select count(*)
+    into strict v_curso
+    from curso c
+    where c.idevento=p_idCurso;
+
+    if v_curso=0 then
+        raise exception
+            using errcode = 'P0002';
+    end if;
+
+    delete
+    from curso
+    where idevento = p_idCurso;
+
+    exception
+        when no_data_found then
+            raise 'No existe el curso introducido';
+        when integrity_constraint_violation then
+            raise 'Existen alumnos inscritos en el curso, no se puede elimnar';
+        when others then
+            raise;
+end
+$$;
+
+-----------------Prueba-----------------
+--Existen alumnos inscritos en el curso, no se puede elimnar
+call borrarCurso(14);
+--No existe el curso introducido
+call borrarCurso(20);
+
+
+-- Procedimiento que muestra un listado de los eventos posteriores a una fecha --
+create procedure evento_fecha(p_fecha date)
+    language plpgsql
+as
+$$
+declare
+    v_hay_filas boolean := false;
+    v_evento record;
+    cur_evento cursor for
+        select id, fechainicio, fechafin
+        from evento
+        where fechainicio > p_fecha;
+begin
+    open cur_evento;
+    loop
+        fetch cur_evento into v_evento;
+        exit when not found;
+        raise notice 'Id del evento: % - Fecha de inicio: % - Fecha fin: %',
+            v_evento.id, v_evento.fechainicio, v_evento.fechafin;
+            v_hay_filas := true;
+    end loop;
+    close cur_evento;
+
+    if not v_hay_filas then
+        raise exception 'No se han encontrado eventos'
+            using errcode = 'CR001'
+                , detail = 'No hay eventos iniciados después de esa fecha.'
+                , hint = 'Pruebe con una fecha anterior.';
+    end if;
+
+exception
+    when sqlstate 'CR001' then
+        raise;
+    when others then
+        raise 'Se ha producido una excepción';
+end;
+$$;
+
+-----------------Prueba-----------------
+-- Muestra eventos --
+call evento_fecha('2021-12-30');
+-- Muestra excepción --
+call evento_fecha('2022-04-24');

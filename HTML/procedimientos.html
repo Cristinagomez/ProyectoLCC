@@ -80,6 +80,176 @@
       <a href="../TXT/pro.txt" class="btn btn-success" target="_blank">Formato de texto</a>
         
     <div id="demo" class="collapse">
+    <pre>
+      <span class="comment">--*****************************************</span>
+      <span class="comment">--          PROCEDIMIENTO 01</span>
+      <span class="comment">--*****************************************</span>
+      <span class="comment">--Este procedimiento sirve para actualizar la valoracion de una cerveza,</span>
+      <span class="comment">--pasamos por parametro el id de la cerveza y el dni del empleado que la valora.</span>
+      <span class="comment">--como fecha pondremos la fecha en la que se realiza el cambio</span>
+      <span class="keyword">create</span> <span class="keyword">procedure</span> actualizar_valoracion_cerveza(
+          p_id_cerveza <span class="keyword">integer</span>,
+          p_dni_empleado <span class="keyword">varchar</span>,
+          p_puntuacion <span class="keyword">integer</span>
+      )
+      <span class="keyword">language plpgsql</span>
+      <span class="keyword">as</span>
+      $$
+      <span class="keyword"><span class="keyword">declare</span></span>
+          c_tipo_empleado <span class="keyword">constant</span> <span class="keyword">int</span> := 1;
+          v_empleado empleado%<span class="keyword">rowtype</span>;
+          v_cerveza  cerveza.id%<span class="keyword">type</span>;
+          v_empleado_exist empleado.dni%<span class="keyword">type</span>;
+      <span class="keyword">begin</span>
+      
+          <span class="keyword">if</span> (p_puntuacion < 1 <span class="keyword">or</span> p_puntuacion > 10) <span class="keyword">then</span>
+              <span class="keyword">raise</span> <span class="keyword">exception</span> 'La puntuacion debe ser entre 1 y 10'
+                  <span class="keyword">using</span> <span class="keyword">errcode</span> = 'L0001';
+          <span class="keyword">end</span> <span class="keyword">if</span>;
+      
+          <span class="keyword">select</span> id 
+          <span class="keyword">into</span> v_cerveza
+          <span class="keyword">from</span> cerveza 
+          <span class="keyword">where</span> id = p_id_cerveza;
+      
+          <span class="comment">-- comprobar si el empleado es somelier</span>
+          <span class="keyword">select</span> * 
+          <span class="keyword">into</span> v_empleado
+          <span class="keyword">from</span> empleado
+          <span class="keyword">where</span> dni = p_dni_empleado;
+      
+          <span class="keyword">if</span> v_cerveza <span class="keyword">is</span> <span class="keyword">null</span> <span class="keyword">then</span>
+              <span class="keyword">raise</span> <span class="keyword">exception</span> 'Id de cerveza no encontrado'
+                  <span class="keyword">using</span> <span class="keyword">errcode</span> = 'L0003';
+          <span class="keyword">end</span> <span class="keyword">if</span>;
+      
+          <span class="keyword">if</span> v_empleado_exist <span class="keyword">is</span> <span class="keyword">null</span> <span class="keyword">then</span>
+              <span class="keyword">raise</span> <span class="keyword">exception</span> 'El dni introducido no existe. '
+                  <span class="keyword">using</span> <span class="keyword">errcode</span> = 'L0004';
+          <span class="keyword">end</span> <span class="keyword">if</span>;
+      
+          <span class="keyword">if</span> v_empleado.tipoEmpleado <> c_tipo_empleado <span class="keyword">then</span>
+              <span class="keyword">raise</span> <span class="keyword">exception</span> 'Empleado %, no puede modificar la valoracion porque no es somelier', v_empleado.nombre
+                  <span class="keyword">using</span> <span class="keyword">errcode</span> = 'L0002';
+          <span class="keyword">else</span>
+              <span class="comment">-- cambiar la puntuacion de la cerveza</span>
+              <span class="keyword">update</span> valoracion
+              <span class="keyword">set</span> dniEmpleado = p_dni_empleado,
+                  puntuacion = p_puntuacion,
+                  fecha = <span class="keyword">date</span>(<span class="keyword">now</span>())
+              <span class="keyword">where</span> idCerveza = p_id_cerveza;
+              <span class="keyword">raise</span> <span class="keyword">notice</span> 'Valoracion modificada correctamente';
+          <span class="keyword">end</span> <span class="keyword">if</span>;
+      
+      <span class="keyword">exception</span>
+          <span class="keyword">when</span> <span class="keyword">sqlstate</span> 'L0001' <span class="keyword">then</span>
+              <span class="keyword">raise</span>;
+          <span class="keyword">when</span> <span class="keyword">sqlstate</span> 'L0002' <span class="keyword">then</span>
+              <span class="keyword">raise</span>;
+          <span class="keyword">when</span> <span class="keyword">sqlstate</span> 'L0003' <span class="keyword">then</span>
+              <span class="keyword">raise</span>;
+          <span class="keyword">when</span> <span class="keyword">sqlstate</span> 'L0004' <span class="keyword">then</span>
+              <span class="keyword">raise</span>;
+          <span class="keyword">when</span> others <span class="keyword">then</span>
+              <span class="keyword">raise</span> <span class="keyword">exception</span> 'Se ha producido un error inesperado';
+      <span class="keyword">end</span>;
+      $$;
+      <span class="comment">-----------------Prueba-----------------</span>
+      call actualizar_valoracion_cerveza(25, '00377022H', 8);
+      
+      
+      
+      <span class="comment">--*****************************************</span>
+      <span class="comment">--          PROCEDIMIENTO 02</span>
+      <span class="comment">--*****************************************</span>
+      <span class="comment">--Borrar curso que no tienen alumnos inscritos</span>
+      <span class="keyword">create</span> <span class="keyword">or</span> <span class="keyword">replace</span> <span class="keyword">procedure</span> borrarCurso(
+          p_idCurso curso.idEvento%<span class="keyword">type</span>
+      )
+      <span class="keyword">language plpgsql</span>
+      <span class="keyword">as</span>
+      $$
+      <span class="keyword"><span class="keyword">declare</span></span>
+          v_curso <span class="keyword">integer</span>;
+      <span class="keyword">begin</span>
+          <span class="keyword">select</span> count(*)
+          <span class="keyword">into</span> strict v_curso
+          <span class="keyword">from</span> curso c
+          <span class="keyword">where</span> c.idevento=p_idCurso;
+      
+          <span class="keyword">if</span> v_curso=0 <span class="keyword">then</span>
+              <span class="keyword">raise</span> <span class="keyword">exception</span>
+                  <span class="keyword">using</span> <span class="keyword">errcode</span> = 'P0002';
+          <span class="keyword">end</span> <span class="keyword">if</span>;
+      
+          <span class="keyword">delete</span>
+          <span class="keyword">from</span> curso
+          <span class="keyword">where</span> idevento = p_idCurso;
+      
+      <span class="keyword">exception</span>
+          <span class="keyword">when</span> no_data_found <span class="keyword">then</span>
+              <span class="keyword">raise</span> 'No existe el curso introducido';
+          <span class="keyword">when</span> integrity_constraint_violation <span class="keyword">then</span>
+              <span class="keyword">raise</span> 'Existen alumnos inscritos en el curso, no se puede elimnar';
+          <span class="keyword">when</span> others <span class="keyword">then</span>
+              <span class="keyword">raise</span>;
+      <span class="keyword">end</span>
+      $$;
+      <span class="comment">-----------------Prueba-----------------</span>
+      call borrarCurso(14);
+      <span class="comment">--Existen alumnos inscritos en el curso, no se puede elimnar</span>
+      call borrarCurso(20);
+      <span class="comment">--No existe el curso introducido</span>
+      
+      
+      
+      <span class="comment">--*****************************************</span>
+      <span class="comment">--          PROCEDIMIENTO 03</span>
+      <span class="comment">--*****************************************</span>
+      <span class="comment">-- Procedimiento que muestra un listado de los eventos posteriores a una fecha --</span>
+      <span class="keyword">create</span> <span class="keyword">procedure</span> evento_fecha(
+          p_fecha <span class="keyword">date</span>
+      )
+      <span class="keyword">language plpgsql</span>
+      <span class="keyword">as</span>
+      $$
+      <span class="keyword"><span class="keyword">declare</span></span>
+          v_hay_filas <span class="keyword">boolean</span> := false;
+          v_evento <span class="keyword">record</span>;
+          cur_evento  <span class="keyword">cursor</span> <span class="keyword">for</span>
+                      <span class="keyword">select</span> id, fechainicio, fechafin
+                      <span class="keyword">from</span> evento
+                      <span class="keyword">where</span> fechainicio > p_fecha;
+      <span class="keyword">begin</span>
+          <span class="keyword">open</span> cur_evento;
+              <span class="keyword">loop</span>
+                  <span class="keyword">fetch</span> cur_evento <span class="keyword">into</span> v_evento;
+                  <span class="keyword">exit</span> <span class="keyword">when</span> <span class="keyword">not</span> <span class="keyword">found</span>;
+                  <span class="keyword">raise</span> <span class="keyword">notice</span> 'Id del evento: % - Fecha de inicio: % - Fecha fin: %', v_evento.id, v_evento.fechainicio, v_evento.fechafin;
+                  v_hay_filas := true;
+              <span class="keyword">end</span> <span class="keyword">loop</span>;
+          <span class="keyword"><span class="keyword">close</span></span> cur_evento;
+      
+          <span class="keyword">if</span> <span class="keyword">not</span> v_hay_filas <span class="keyword">then</span>
+              <span class="keyword">raise</span> <span class="keyword">exception</span> 'No se han encontrado eventos'
+                  <span class="keyword">using</span> <span class="keyword">errcode</span> = 'CR001'
+                      , <span class="keyword">detail</span> = 'No hay eventos iniciados después de esa fecha.'
+                      , <span class="keyword">hint</span> = 'Pruebe con una fecha anterior.';
+          <span class="keyword">end</span> <span class="keyword">if</span>;
+      
+      <span class="keyword">exception</span>
+          <span class="keyword">when</span> <span class="keyword">sqlstate</span> 'CR001' <span class="keyword">then</span>
+              <span class="keyword">raise</span>;
+          <span class="keyword">when</span> others <span class="keyword">then</span>
+              <span class="keyword">raise</span> 'Se ha producido una excepción';
+      <span class="keyword">end</span>;
+      $$;
+      <span class="comment">-----------------Prueba-----------------</span>
+      <span class="comment">-- Muestra eventos --</span>
+      call evento_fecha('2021-12-30');
+      <span class="comment">-- Muestra excepción --</span>
+      call evento_fecha('2022-04-24');     
+    </pre>
         <a href="#demo" class="btn btn-success" data-bs-toggle="collapse">Ocultar procedimientos</a>
     </div>
   </div>
@@ -89,6 +259,152 @@
       <a href="../TXT/fun.txt" class="btn btn-success" target="_blank">Formato de texto</a>
         
     <div id="demo1" class="collapse">
+      <pre>
+        <span class="comment">--*****************************************</span>
+        <span class="comment">--          FUNCIÓN 01</span>
+        <span class="comment">--*****************************************</span>
+        <span class="comment">--Esta funcion recibira dos puntuaciones y devolvera el numero de cervezas</span>
+        <span class="comment">--encontradas entre ese rango de puntuaciones y mostrara alguno de sus datos</span>
+        <span class="keyword">create</span> <span class="keyword">or</span> <span class="keyword">replace</span> <span class="keyword">function</span> num_cervezas_rango_puntuacion(
+            p_min_valoracion valoracion.puntuacion%<span class="keyword">type</span>,
+            p_max_valoracion valoracion.puntuacion%<span class="keyword">type</span>
+        )
+        <span class="keyword">returns</span> <span class="keyword">int</span>
+        <span class="keyword">language plpgsql</span>
+        <span class="keyword">as</span>
+        $$
+        <span class="keyword"><span class="keyword">declare</span></span>
+            v_num_cerveza <span class="keyword">integer</span> := 0;
+            v_cerveza cerveza%<span class="keyword">rowtype</span>;
+            cur_cerveza <span class="keyword">cursor</span> <span class="keyword">for</span>
+                        <span class="keyword">select</span> * 
+                        <span class="keyword">from</span> cerveza c
+                             <span class="keyword">join</span> valoracion v <span class="keyword">on</span> (c.id = v.idCerveza)
+                             <span class="keyword">where</span> v.puntuacion <SPAN CLASS="KEYWORD">BETWEEN</SPAN> p_min_valoracion <SPAN CLASS="KEYWORD">AND</SPAN> p_max_valoracion;
+        <span class="keyword">begin</span>
+        
+            <span class="keyword">if</span> ( (p_min_valoracion < 1 <span class="keyword">or</span> p_min_valoracion > 10) <span class="keyword">and</span> (p_max_valoracion < 1 <span class="keyword">or</span> p_max_valoracion > 10) )<span class="keyword">then</span>
+                <span class="keyword">raise</span> <span class="keyword">exception</span> 'El rango debe estar entre 1 y 10'
+                    <span class="keyword">using</span> <span class="keyword">errcode</span> = 'L0001';
+            <span class="keyword">end</span> <span class="keyword">if</span>;
+        
+            <span class="keyword">if</span> (p_min_valoracion > p_max_valoracion) <span class="keyword">then</span>
+                <span class="keyword">raise</span> <span class="keyword">exception</span> 'El primer valor debe ser menor que el segundo'
+                    <span class="keyword">using</span> <span class="keyword">errcode</span> = 'L0002';
+            <span class="keyword">end</span> <span class="keyword">if</span>;
+        
+            <span class="comment">-- abrimos el <span class="keyword">cursor</span></span>
+            <span class="keyword">open</span> cur_cerveza;
+                <span class="keyword">fetch</span> cur_cerveza <span class="keyword">into</span> v_cerveza;
+                <span class="keyword">while</span> (<span class="keyword">found</span>) <span class="keyword">loop</span>
+                    <span class="keyword">raise</span> <span class="keyword">notice</span> 'Cerveza %-%, estilo: %, alcohol: %, ibu: %', v_cerveza.id,v_cerveza.nombre, v_cerveza.estilo, v_cerveza.alcohol, v_cerveza.ibu;
+                    v_num_cerveza := v_num_cerveza + 1;
+                    <span class="comment">-- obtener siguiente cerveza del <span class="keyword">cursor</span></span>
+                    <span class="keyword">fetch</span> cur_cerveza <span class="keyword">into</span> v_cerveza;
+                <span class="keyword">end</span> <span class="keyword">loop</span>;
+        
+                <span class="keyword">raise</span> <span class="keyword">notice</span> 'Número de cervezas encontradas %', v_num_cerveza;
+                <span class="comment">-- cerrar <span class="keyword">cursor</span></span>
+            <span class="keyword"><span class="keyword">close</span></span> cur_cerveza;
+            <span class="keyword">return</span> v_num_cerveza;
+        <span class="keyword">exception</span>
+            <span class="keyword">when</span> <span class="keyword">sqlstate</span> 'L0001' <span class="keyword">then</span>
+                <span class="keyword">raise</span>;
+            <span class="keyword">when</span> <span class="keyword">sqlstate</span> 'L0002' <span class="keyword">then</span>
+                <span class="keyword">raise</span>;
+            <span class="keyword">when</span> others <span class="keyword">then</span>
+                <span class="keyword">raise</span> <span class="keyword">exception</span> 'Se ha producido un error inesperado';
+        <span class="keyword">end</span>;
+        $$;
+        <span class="comment">-----------------Prueba-----------------</span>
+        <span class="keyword">select</span> num_cervezas_rango_puntuacion(4,8);
+        
+        
+        
+        <span class="comment">--*****************************************</span>
+        <span class="comment">--          FUNCIÓN 02</span>
+        <span class="comment">--*****************************************</span>
+        <span class="comment">--Se requiere las iniciales de los alumnos para posibles premios que se hagan</span>
+        <span class="keyword">create</span> <span class="keyword">function</span> inicialesDeAlumnos() 
+        <span class="keyword">returns</span> <span class="keyword">varchar</span>
+        <span class="keyword">language plpgsql</span>
+        <span class="keyword">as</span>
+        $$
+        <span class="keyword"><span class="keyword">declare</span></span>
+            v_idCurso <span class="keyword">record</span>;
+            v_alumno <span class="keyword">varchar</span>;
+            v_auxIniciales <span class="keyword">varchar</span>;
+            cur_alumnos <span class="keyword">cursor</span> <span class="keyword">for</span> 
+                        <span class="keyword">select</span> * 
+                        <span class="keyword">from</span> alumno;
+        <span class="keyword">begin</span>
+            <span class="keyword">for</span> item in cur_alumnos <span class="keyword">loop</span>
+                v_alumno=item.nombre;
+                <span class="keyword">select</span> idcurso
+                <span class="keyword">into</span> v_idCurso
+                <span class="keyword">from</span> cursa c
+                <span class="keyword">where</span> c.dnialum=item.dni;
+        
+                v_auxIniciales = <span class="keyword">concat</span>( v_auxIniciales, ';',left( <span class="keyword">split_part</span>(item.nombre,' ',1),1), left( <span class="keyword">split_part</span>(item.nombre,' ',2),1) );
+            <span class="keyword">end</span> <span class="keyword">loop</span>;   
+        
+            <span class="keyword">return</span> v_auxIniciales;
+        
+        <span class="keyword">exception</span>
+            <span class="keyword">when</span> too_many_rows <span class="keyword">then</span>
+                <span class="keyword">raise</span> <span class="keyword">exception</span> 'El alumno % esta inscrito en mas de un curso', v_alumno;
+            <span class="keyword">when</span> others <span class="keyword">then</span>
+                <span class="keyword">raise</span> ;
+        <span class="keyword">end</span>;
+        $$;
+        <span class="comment">-----------------Prueba-----------------</span>
+        <span class="keyword">select</span> inicialesDeAlumnos();
+        
+        
+        
+        <span class="comment">--*****************************************</span>
+        <span class="comment">--          FUNCIÓN 03</span>
+        <span class="comment">--*****************************************</span>
+        <span class="comment">-- Función que cuenta cuantas veces a participado una cervecera en concursos --</span>
+        <span class="keyword">create</span> <span class="keyword">or</span> <span class="keyword">replace</span> <span class="keyword">function</span> get_partipaciones_cervecera(
+            p_cif_cerv cervecera.cif%<span class="keyword">type</span>
+        )
+        <span class="keyword">returns</span> <span class="keyword">integer</span>
+        <span class="keyword">language plpgsql</span>
+        <span class="keyword">as</span>
+        $$
+        <span class="keyword"><span class="keyword">declare</span></span>
+            v_num_participaciones <span class="keyword">integer</span>;
+        <span class="keyword">begin</span>
+            <span class="keyword">select</span> count(*)
+            <span class="keyword">into</span> strict v_num_participaciones
+            <span class="keyword">from</span> cervecera
+            <span class="keyword">where</span> cif = p_cif_cerv;
+        
+            <span class="keyword">if</span> <span class="keyword">found</span> <span class="keyword">then</span>
+                case v_num_participaciones
+                    <span class="keyword">when</span> 0 <span class="keyword">then</span>
+                        <span class="keyword">raise</span> <span class="keyword">notice</span> 'La cervecera no ha participado en concursos anteriores.';
+                    <span class="keyword">else</span>
+                        <span class="keyword">raise</span> <span class="keyword">notice</span> 'Ya existen datos guardados para esta cervecera, ha participado % veces.', v_num_participaciones;
+                <span class="keyword">end</span> case;
+            <span class="keyword">end</span> <span class="keyword">if</span>;
+        
+            <span class="keyword">return</span> v_num_participaciones;
+        
+        <span class="keyword">exception</span>
+            <span class="keyword">when</span> no_data_found <span class="keyword">then</span>
+                <span class="keyword">raise</span> <span class="keyword">exception</span> 'No hay datos';
+            <span class="keyword">when</span> others <span class="keyword">then</span>
+                <span class="keyword">raise</span> <span class="keyword">exception</span> 'Ha ocurrido un error no esperado';
+        <span class="keyword">end</span>;
+        $$
+        <span class="comment">-----------------Prueba-----------------</span>
+        <span class="comment">-- Muestra un caso en el que la cervecera ha participado --</span>
+        <span class="keyword">select</span> get_partipaciones_cervecera('G24272437');
+        <span class="comment">-- Muestra un caso en el que la cervecera no ha participado --</span>
+        <span class="keyword">select</span> get_partipaciones_cervecera('G24272438');        
+      </pre>
         <a href="#demo1" class="btn btn-success" data-bs-toggle="collapse">Ocultar funciones</a>
     </div>
   </div>

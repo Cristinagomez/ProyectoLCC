@@ -77,13 +77,149 @@
   <div class="container p-3 mt-4">
     <h2 class="text-success">Triggers</h2>
       <a href="#demo" class="btn btn-success" data-bs-toggle="collapse">Triggers</a>
-      <a href="" class="btn btn-success" target="_blank">Formato de texto</a>
-        
+      <a href="../TXT/triggers.txt" class="btn btn-success" target="_blank">Formato de texto</a>
+      
     <div id="demo" class="collapse">
+      <pre>
+        <pre>
+          <span class="comment">--*********************************************************************************************</span>
+          <span class="comment">--                                          <span class="keyword">TRIGGER</span> Nº1</span>
+          <span class="comment">--  Si por alguna razon el ganador cambia (error al insertarlo, descalificación, etc)</span>
+          <span class="comment">--  Antes de hacer la actualización se guardan los datos nuevos y antiguos en una tabla</span>
+          <span class="comment">--  Solo se ejecuta cuando se ha registrado con anterioridad un ganador</span>
+          <span class="comment">--  NO aplica en caso de que se actualice un resgitro que que incluía solo idconcurso y juez</span>
+          <span class="comment">--*********************************************************************************************</span>
+          
+          <span class="keyword">CREATE</span> <span class="keyword">TABLE</span> ganador_audit (
+              id <span class="keyword">SERIAL PRIMARY KEY</span>,
+              idconcurso <span class="keyword">INT</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span>,
+              ganador_anterior <span class="keyword">VARCHAR</span>(50) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,
+              nuevo_ganador <span class="keyword">VARCHAR</span>(50) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,
+              fecha_cambio <span class="keyword">TIMESTAMP</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span>
+          );
+          
+          <span class="keyword">CREATE</span> <span class="keyword">OR</span> <span class="keyword">REPLACE</span> <span class="keyword">FUNCTION</span> audit_cambio_ganador()
+          <span class="keyword">RETURNS</span> <span class="keyword">TRIGGER</span>
+          <span class="keyword">LANGUAGE</span> plpgsql
+          <span class="keyword">AS</span>
+          $$
+          <span class="keyword">BEGIN</span>
+              <span class="keyword">IF</span> <span class="keyword">NEW</span>.ganador <> <span class="keyword">OLD</span>.ganador <span class="keyword">THEN</span>
+                  <span class="keyword">INSERT</span> <span class="keyword">INTO</span> ganador_audit(idconcurso,ganador_anterior,nuevo_ganador, fecha_cambio)
+                  <span class="keyword">VALUES</span>(<span class="keyword">OLD</span>.idevento, <span class="keyword">OLD</span>.ganador, <span class="keyword">NEW</span>.ganador, now());
+              <span class="keyword">END</span> <span class="keyword">IF</span>;
+          
+              <span class="keyword">RETURN</span> <span class="keyword">NEW</span>;
+          <span class="keyword">END</span>;
+          $$
+          
+          <span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> audit_cambio_ganador
+          <span class="keyword">BEFORE</span> <span class="keyword">UPDATE</span> ON concurso
+          <span class="keyword">FOR EACH ROW</span>
+          <span class="keyword">WHEN</span> (<span class="keyword">OLD</span>.ganador IS <span class="keyword">NOT</span> <span class="keyword">NULL</span>)
+          <span class="keyword">EXECUTE <span class="keyword">FUNCTION</span></span> audit_cambio_ganador();
+          
+          <span class="comment">--*********************</span>
+          <span class="comment">--      Pruebas</span>
+          <span class="comment">--*********************</span>
+          <span class="comment">--Guarda registro en la tabla que audita</span>
+          <span class="keyword">UPDATE</span> concurso 
+          <span class="keyword">SET</span> ganador = 'R5448907E' 
+          <span class="keyword">WHERE</span> idevento = 33;
+          
+          <span class="comment">--No guarda registro en la tabla que audita</span>
+          <span class="keyword">INSERT</span> <span class="keyword">INTO</span> concurso (idevento, nombrejuez) <span class="keyword">VALUES</span> (34, 'Carlee Forrest');
+          <span class="keyword">UPDATE</span> concurso 
+          <span class="keyword">SET</span> ganador = 'R5448907E'
+          <span class="keyword">WHERE</span> idevento = 34;
+          
+          <span class="comment">--*********************************************************************************************</span>
+          <span class="comment">--                                          <span class="keyword">TRIGGER</span> Nº2</span>
+          <span class="comment">--  Despues de actualizar o insertar una nueva valoracion de una cerveza te muestra un mesaje</span>
+          <span class="comment">--*********************************************************************************************</span>
+          
+          <span class="keyword">CREATE</span> <span class="keyword">OR</span> <span class="keyword">REPLACE</span> <span class="keyword">FUNCTION</span> maximo_minima_puntuacion()
+          <span class="keyword">RETURNS</span> <span class="keyword">TRIGGER</span>
+          <span class="keyword">LANGUAGE</span> PLPGSQL
+          <span class="keyword">AS</span>
+          $$
+          <span class="keyword">BEGIN</span>
+              <span class="keyword">IF</span> (TG_OP = '<span class="keyword">INSERT</span>') <span class="keyword">THEN</span>
+                  <span class="keyword">RAISE</span> <span class="keyword">NOTICE</span> 'Se ha registrado la valoracion para la cerveza con id % correctamente.', <span class="keyword">NEW</span>.idcerveza;
+              <span class="keyword">ELSEIF</span> (TG_OP = '<span class="keyword">UPDATE</span>') <span class="keyword">THEN</span>
+                  <span class="keyword">RAISE</span> <span class="keyword">NOTICE</span> 'Se ha modificado la valoracion de % puntos a % puntos.', <span class="keyword">OLD</span>.puntuacion, <span class="keyword">NEW</span>.puntuacion;
+              <span class="keyword">END</span> <span class="keyword">IF</span>;
+          
+              <span class="keyword">RETURN</span> <span class="keyword">NULL</span>;
+          <span class="keyword">END</span>;
+          $$
+          
+          <span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> maximo_minima_puntuacion
+          <span class="keyword">AFTER</span> <span class="keyword">INSERT</span> <span class="keyword">OR</span> <span class="keyword">UPDATE</span> OF puntuacion ON valoracion
+          <span class="keyword">FOR EACH ROW</span>
+          <span class="keyword">EXECUTE <span class="keyword">FUNCTION</span></span> maximo_minima_puntuacion();
+          
+          <span class="comment">--*********************************************************************************************</span>
+          <span class="comment">--                                          <span class="keyword">TRIGGER</span> Nº3</span>
+          <span class="comment">-- Autoconfirmación de las altas, bajas y modificaciones en los empleados</span>
+          <span class="comment">--*********************************************************************************************</span>
+          
+          <span class="comment">--alta, baja o modifcacion de un empleado somelier</span>
+          <span class="keyword">CREATE</span> <span class="keyword">OR</span> <span class="keyword">REPLACE</span> <span class="keyword">FUNCTION</span> comprobarGestionEmpleado()
+          <span class="keyword">RETURNS</span> <span class="keyword">TRIGGER</span>
+          <span class="keyword">LANGUAGE</span> plpgsql
+          <span class="keyword">AS</span>
+          $$
+          <span class="keyword">DECLARE</span>
+              v_emp <span class="keyword">INT</span>;
+              v_empDatos <span class="keyword">RECORD</span>;
+          <span class="keyword">BEGIN</span>
+              <span class="keyword">IF</span> (TG_OP = '<span class="keyword">INSERT</span>') <span class="keyword">THEN</span>
+                  <span class="keyword">SELECT</span> count(*) <span class="keyword">INTO</span> v_emp <span class="keyword">FROM</span> empleado <span class="keyword">WHERE</span> dni =<span class="keyword">NEW</span>.dni;
+                  <span class="keyword">IF</span>( v_emp > 0 ) <span class="keyword">THEN</span>
+                      <span class="keyword">RAISE</span> <span class="keyword">NOTICE</span> 'Se ha dado de alta correctamente al empleado: % con dni: %', <span class="keyword">NEW</span>.nombre, <span class="keyword">NEW</span>.dni;
+                  <span class="keyword">ELSEIF</span> <span class="keyword">IF</span>;
+              <span class="keyword">ELSEIF</span> (TG_OP = '<span class="keyword">UPDATE</span>') <span class="keyword">THEN</span>
+                  <span class="keyword">SELECT</span> * <span class="keyword">INTO</span> v_empDatos <span class="keyword">FROM</span> empleado <span class="keyword">WHERE</span> dni =<span class="keyword">NEW</span>.dni;
+                  <span class="keyword">RAISE</span> <span class="keyword">NOTICE</span> 'Se han actualizado los datos del empleado %;', <span class="keyword">NEW</span>.dni;
+                  <span class="keyword">RAISE</span> <span class="keyword">NOTICE</span> 'Nombre: %', <span class="keyword">NEW</span>.nombre;
+                  <span class="keyword">RAISE</span> <span class="keyword">NOTICE</span> 'Teléfono: %', <span class="keyword">NEW</span>.telefono;
+                  <span class="keyword">RAISE</span> <span class="keyword">NOTICE</span> 'Sueldo: %', <span class="keyword">NEW</span>.sueldo;
+                  <span class="keyword">RAISE</span> <span class="keyword">NOTICE</span> 'Jefe %', <span class="keyword">NEW</span>.jefe;
+                  <span class="keyword">RAISE</span> <span class="keyword">NOTICE</span> 'Años de experiencia: %', <span class="keyword">NEW</span>.anosexperiencia;
+                  <span class="keyword">RAISE</span> <span class="keyword">NOTICE</span> 'Tipo empleado: %', <span class="keyword">NEW</span>.tipoempleado;
+              <span class="keyword">ELSEIF</span> (TG_OP = '<span class="keyword">DELETE</span>') <span class="keyword">THEN</span>
+                  <span class="keyword">SELECT</span> count(*) <span class="keyword">INTO</span> v_emp <span class="keyword">FROM</span> empleado <span class="keyword">WHERE</span> dni =<span class="keyword">NEW</span>.dni;
+                  <span class="keyword">IF</span> (v_emp=0)<span class="keyword">THEN</span>
+                      <span class="keyword">RAISE</span> <span class="keyword">NOTICE</span> 'Se ha dado de baja correctamente al empleado: % con dni: %', <span class="keyword">OLD</span>.nombre, <span class="keyword">OLD</span>.dni;
+                  <span class="keyword">END</span> <span class="keyword">IF</span>;
+              <span class="keyword">END</span> <span class="keyword">IF</span>;
+              <span class="keyword">RETURN</span> <span class="keyword">NULL</span>;
+          <span class="keyword">END</span>;
+          $$;
+          
+          <span class="keyword">CREATE</span> <span class="keyword">TRIGGER</span> gestionEmpleado
+          <span class="keyword">AFTER</span> <span class="keyword">INSERT</span> <span class="keyword">OR</span> <span class="keyword">UPDATE</span> <span class="keyword">OR</span> <span class="keyword">DELETE</span> on empleado
+          <span class="keyword">FOR EACH ROW</span>
+          <span class="keyword">EXECUTE <span class="keyword">FUNCTION</span></span> comprobarGestionEmpleado();
+          
+          <span class="comment">--*********************</span>
+          <span class="comment">--      Pruebas</span>
+          <span class="comment">--*********************</span>
+          <span class="keyword">INSERT</span> <span class="keyword">INTO</span> empleado <span class="keyword">VALUES</span> ('1254789G','katherin','658932457',2000.0,false,2,1);
+          
+          <span class="keyword">UPDATE</span> empleado
+          <span class="keyword">SET</span> sueldo = 2100
+          <span class="keyword">WHERE</span> dni = '1254789G';
+          
+          <span class="keyword">DELETE</span>
+          <span class="keyword">FROM</span> empleado
+          <span class="keyword">WHERE</span> dni = '1254789G';
+        </pre>          
+      </pre>
         <a href="#demo" class="btn btn-success" data-bs-toggle="collapse">Ocultar triggers</a>
     </div>
   </div>
-
   <footer class="container-fluid p-2 mt-4 bg-success text-white text-center footer">
     <a href="avisolegal.html" class="text-light" target="_blank">Aviso legal</a>
   </footer>

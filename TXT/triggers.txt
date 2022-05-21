@@ -1,0 +1,133 @@
+--*********************************************************************************************
+--                                          TRIGGER Nº1
+--  Si por alguna razon el ganador cambia (error al insertarlo, descalificación, etc)
+--  Antes de hacer la actualización se guardan los datos nuevos y antiguos en una tabla
+--  Solo se ejecuta cuando se ha registrado con anterioridad un ganador
+--  NO aplica en caso de que se actualice un resgitro que que incluía solo idconcurso y juez
+--*********************************************************************************************
+
+CREATE TABLE ganador_audit (
+    id SERIAL PRIMARY KEY,
+    idconcurso INT NOT NULL,
+    ganador_anterior VARCHAR(50) NOT NULL,
+    nuevo_ganador VARCHAR(50) NOT NULL,
+    fecha_cambio TIMESTAMP NOT NULL
+);
+
+CREATE OR REPLACE FUNCTION audit_cambio_ganador()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    IF NEW.ganador <> OLD.ganador THEN
+        INSERT INTO ganador_audit(idconcurso,ganador_anterior,nuevo_ganador, fecha_cambio)
+        VALUES(OLD.idevento, OLD.ganador, NEW.ganador, now());
+    END IF;
+
+    RETURN NEW;
+END;
+$$
+
+CREATE TRIGGER audit_cambio_ganador
+BEFORE UPDATE ON concurso
+FOR EACH ROW
+WHEN (OLD.ganador IS NOT NULL)
+EXECUTE FUNCTION audit_cambio_ganador();
+
+--*********************
+--      Pruebas
+--*********************
+--Guarda registro en la tabla que audita
+UPDATE concurso 
+SET ganador = 'R5448907E' 
+WHERE idevento = 33;
+
+--No guarda registro en la tabla que audita
+INSERT INTO concurso (idevento, nombrejuez) VALUES (34, 'Carlee Forrest');
+UPDATE concurso 
+SET ganador = 'R5448907E'
+WHERE idevento = 34;
+
+--*********************************************************************************************
+--                                          TRIGGER Nº2
+--  Despues de actualizar o insertar una nueva valoracion de una cerveza te muestra un mesaje
+--*********************************************************************************************
+
+CREATE OR REPLACE FUNCTION maximo_minima_puntuacion()
+RETURNS TRIGGER
+LANGUAGE PLPGSQL
+AS
+$$
+BEGIN
+    IF (TG_OP = 'INSERT') THEN
+        raise notice 'Se ha registrado la valoracion para la cerveza con id % correctamente.', NEW.idcerveza;
+    ELSIF (TG_OP = 'UPDATE') THEN
+        raise notice 'Se ha modificado la valoracion de % puntos a % puntos.', OLD.puntuacion, NEW.puntuacion;
+    END IF;
+
+    RETURN NULL;
+END;
+$$
+
+CREATE TRIGGER maximo_minima_puntuacion
+AFTER INSERT OR UPDATE OF puntuacion ON valoracion
+FOR EACH ROW
+EXECUTE FUNCTION maximo_minima_puntuacion();
+
+--*********************************************************************************************
+--                                          TRIGGER Nº3
+-- Autoconfirmación de las altas, bajas y modificaciones en los empleados
+--*********************************************************************************************
+
+--alta, baja o modifcacion de un empleado somelier
+create or replace function comprobarGestionEmpleado()
+returns trigger
+language plpgsql
+as
+$$
+declare
+    v_emp int;
+    v_empDatos record;
+begin
+    if (TG_OP = 'INSERT') then
+        select count(*) into v_emp from empleado where dni =new.dni;
+        if( v_emp > 0 ) then
+            raise notice 'Se ha dado de alta correctamente al empleado: % con dni: %', new.nombre, new.dni;
+        end if;
+    elseif (TG_OP = 'UPDATE') then
+        select * into v_empDatos from empleado where dni =new.dni;
+        raise notice 'Se han actualizado los datos del empleado %;', new.dni;
+        raise notice 'Nombre: %', new.nombre;
+        raise notice 'Teléfono: %', new.telefono;
+        raise notice 'Sueldo: %', new.sueldo;
+        raise notice 'Jefe %', new.jefe;
+        raise notice 'Años de experiencia: %', new.anosexperiencia;
+        raise notice 'Tipo empleado: %', new.tipoempleado;
+    elseif (TG_OP = 'DELETE') then
+        select count(*) into v_emp from empleado where dni =new.dni;
+        if (v_emp=0)then
+            raise notice 'Se ha dado de baja correctamente al empleado: % con dni: %', old.nombre, old.dni;
+        end if;
+    end if;
+    return null;
+end;
+$$;
+
+CREATE TRIGGER gestionEmpleado
+after insert or update or delete on empleado
+FOR EACH ROW
+EXECUTE FUNCTION comprobarGestionEmpleado();
+
+--*********************
+--      Pruebas
+--*********************
+insert into empleado values ( '1254789G','katherin','658932457',2000.0,false,2,1);
+
+update empleado
+set sueldo = 2100
+where dni = '1254789G';
+
+delete
+from empleado
+where dni = '1254789G';
